@@ -659,28 +659,50 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         function extractOrderNumber(input) {
             if (!input) return '';
             const orderMatch = input.match(/#(\d+)/);
-            return orderMatch ? orderMatch[1] : '';
+            if (!orderMatch) return '';
+            // Garante que retorna só os dígitos, sem "#"
+            return orderMatch[1].replace('#', '').trim();
         }
         
+        // ============================================
+        // EXTRAÇÃO DE CUPOM E DESCONTO PIX
+        // ============================================
         function extractCoupon(input) {
             if (!input) return { code: '', amount: 0 };
             
+            // Tenta cupom primeiro
             const cupomMatch = input.match(/Desconto via cupom\s+([A-Z0-9]+)/i);
-            if (!cupomMatch) return { code: '', amount: 0 };
             
-            const couponCode = cupomMatch[1].trim();
-            
+            let couponCode = '';
             let discountAmount = 0;
-            const discountMatch = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
-            if (discountMatch) {
-                discountAmount = parsePrice(discountMatch[1]);
-                discountAmount = Math.abs(discountAmount);
+            
+            if (cupomMatch) {
+                couponCode = cupomMatch[1].trim();
+                const discountMatch = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
+                if (discountMatch) {
+                    discountAmount = parsePrice(discountMatch[1]);
+                    discountAmount = Math.abs(discountAmount);
+                }
+                return { code: couponCode, amount: discountAmount };
             }
             
-            return {
-                code: couponCode,
-                amount: discountAmount
-            };
+            // Se não for cupom, tenta desconto via PIX
+            const pixMatch = input.match(/(?:Desconto|Desc\.?)\s*(?:via\s*)?(?:PIX|Pix)[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/i);
+            if (pixMatch) {
+                discountAmount = parsePrice(pixMatch[1]);
+                discountAmount = Math.abs(discountAmount);
+                return { code: 'PIX', amount: discountAmount };
+            }
+            
+            // Tenta formato genérico "Desconto: R$ X,XX"
+            const genericMatch = input.match(/Desconto[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/i);
+            if (genericMatch) {
+                discountAmount = parsePrice(genericMatch[1]);
+                discountAmount = Math.abs(discountAmount);
+                return { code: 'DESCONTO', amount: discountAmount };
+            }
+            
+            return { code: '', amount: 0 };
         }
         
         function extractTotal(input) {
@@ -723,31 +745,26 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         
         // ============================================
         // EXTRAÇÃO DO BLOCO [AGENDAMENTO DA ENTREGA]
-        // (NOVO FORMATO - substitui as antigas
-        //  extractGiftedName / extractGiftedPhone /
-        //  extractDeliveryInfo / extractMessage)
         // ============================================
         function extractAgendamento(input) {
             const result = {
                 cep: '',
-                deliveryDate: '',      // formatada com dia da semana
-                deliveryDateRaw: '',   // só a data
+                deliveryDate: '',
+                deliveryDateRaw: '',
                 deliveryTime: '',
                 giftedName: '',
                 giftedPhone: '',
-                sendCard: 'Não',
-                message: '',           // mensagem + assinatura (mesma célula, com \n)
+                sendCard: 'Não',   // "Sim"/"Não" — indica se leva mensagem no cartão
+                message: '',       // mensagem + assinatura no final, mesma célula
                 messageOnly: '',
                 signature: ''
             };
 
             if (!input) return result;
 
-            // 1) Tenta pegar o bloco novo [AGENDAMENTO DA ENTREGA]
             const blocoMatch = input.match(/\[AGENDAMENTO DA ENTREGA\]([\s\S]*?)\[\/AGENDAMENTO DA ENTREGA\]/i);
             const bloco = blocoMatch ? blocoMatch[1] : '';
 
-            // Função auxiliar: pega o valor após os ":" de uma linha com o rótulo
             const pegarValor = (fonte, rotulo) => {
                 if (!fonte) return '';
                 const regex = new RegExp(rotulo + '\\s*:\\s*(.*)', 'i');
@@ -756,7 +773,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             };
 
             if (bloco) {
-                // ---- Formato NOVO (dentro da Observação do carrinho) ----
                 result.cep             = pegarValor(bloco, 'CEP da entrega');
                 result.deliveryDateRaw = pegarValor(bloco, 'Data da entrega');
                 result.deliveryTime    = pegarValor(bloco, 'Horário da entrega');
@@ -767,9 +783,10 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 result.sendCard = /sim/i.test(enviarCartaoRaw) ? 'Sim' : 'Não';
 
                 if (result.sendCard === 'Sim') {
-                    // Pega a mensagem (tudo após "Mensagem do cartão:" até a próxima linha de rótulo)
-                    const msgMatch = bloco.match(/Mensagem do cartão\s*:\s*([\s\S]*?)(?=\nAssinatura no cartão\s*:|\n\[|$)/i);
-                    const assinaturaMatch = bloco.match(/Assinatura no cartão\s*:\s*([\s\S]*?)(?=\n\[|$)/i);
+                    // Mensagem do cartão: tudo após "Mensagem do cartão:" até "Assinatura no cartão:" (ou fim do bloco)
+                    const msgMatch = bloco.match(/Mensagem do cartão\s*:\s*([\s\S]*?)(?=\nAssinatura no cartão\s*:|$)/i);
+                    // Assinatura: tudo após "Assinatura no cartão:"
+                    const assinaturaMatch = bloco.match(/Assinatura no cartão\s*:\s*([\s\S]*?)$/i);
 
                     const msg = msgMatch ? msgMatch[1].trim() : '';
                     const assinatura = assinaturaMatch ? assinaturaMatch[1].trim() : '';
@@ -777,7 +794,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     result.messageOnly = msg;
                     result.signature   = assinatura;
 
-                    // Salva mensagem + quebra de linha + assinatura na MESMA célula
+                    // Salva SEMPRE na mesma célula: mensagem + quebra de linha + assinatura no final
                     if (msg && assinatura) {
                         result.message = msg + '\n' + assinatura;
                     } else if (msg) {
@@ -787,7 +804,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     }
                 }
 
-                // Formata data com dia da semana
                 if (result.deliveryDateRaw && /^\d{2}\/\d{2}\/\d{4}$/.test(result.deliveryDateRaw)) {
                     const weekday = getWeekdayName(result.deliveryDateRaw);
                     result.deliveryDate = `${result.deliveryDateRaw} - ${weekday}`;
@@ -796,7 +812,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 return result;
             }
 
-            // ---- FALLBACK: formato ANTIGO (mantém compatibilidade) ----
+            // FALLBACK: formato antigo
             const giftedMatch = input.match(/Nome da pessoa presenteada:\s*(.+?)(?:\n|$)/);
             if (giftedMatch) result.giftedName = giftedMatch[1].trim();
 
@@ -971,12 +987,22 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             };
         }
         
+        // ============================================
+        // DETECÇÃO DA FORMA DE PAGAMENTO
+        // (Pagar.me / Cartão / Pix — comportamento
+        //  original restaurado, sem se confundir
+        //  com "Enviar cartão:")
+        // ============================================
         function detectPaymentMethod(input) {
             if (!input) return '';
             
-            if (input.includes('Pagar.me') || input.includes('Cartão')) {
+            // Remove o bloco do agendamento para não confundir
+            // "Enviar cartão:" / "Assinatura no cartão:" com forma de pagamento
+            const inputSemAgendamento = input.replace(/\[AGENDAMENTO DA ENTREGA\][\s\S]*?\[\/AGENDAMENTO DA ENTREGA\]/i, '');
+            
+            if (inputSemAgendamento.includes('Pagar.me') || inputSemAgendamento.includes('Cartão')) {
                 return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            } else if (input.includes('Pix')) {
+            } else if (inputSemAgendamento.includes('Pix') || inputSemAgendamento.includes('PIX')) {
                 return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
             }
             
@@ -1002,7 +1028,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 const customerName = extractCustomerName(input);
                 const customerPhone = extractPhone(input);
                 
-                // NOVO: extração unificada do agendamento
+                // Extração unificada do agendamento (nome/telefone presenteado, data, hora, cartão)
                 const agendamento = extractAgendamento(input);
                 const giftedName = agendamento.giftedName;
                 const giftedPhone = agendamento.giftedPhone;
@@ -1011,8 +1037,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     formattedDate: agendamento.deliveryDate,
                     time: agendamento.deliveryTime
                 };
-                const message = agendamento.message;
-                const hasCard = agendamento.sendCard;
+                const message = agendamento.message;   // mensagem + \n + assinatura
+                const hasCard = agendamento.sendCard;  // "Sim"/"Não" -> coluna 17
                 
                 const address = extractAddress(input);
                 const products = extractProducts(input);
@@ -1091,8 +1117,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 excelColumns[15] = result.deliveryDate;
                 excelColumns[16] = result.deliveryTime;
                 excelColumns[17] = result.hasMessage;   // "Sim"/"Não" do Enviar cartão
-                excelColumns[18] = result.message;      // mensagem + \n + assinatura
-                excelColumns[32] = result.paymentMethod;
+                excelColumns[18] = result.message;      // mensagem + \n + assinatura no final
+                excelColumns[32] = result.paymentMethod; // forma de pagamento (Pagar.me / Pix / Cartão)
                 excelColumns[46] = result.source;
                 excelColumns[48] = result.isAnonymous;
                 excelColumns[50] = result.couponInfo;
@@ -1130,7 +1156,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 <div class="finance-summary">
                     <div class="finance-item">
                         <span class="finance-label">🧾 Número do Pedido:</span>
-                        <span class="finance-value">#${result.orderNumber || 'N/A'}</span>
+                        <span class="finance-value">${result.orderNumber || 'N/A'}</span>
                     </div>
                     <div class="finance-item">
                         <span class="finance-label">💰 Total do Pedido:</span>
@@ -1142,7 +1168,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     </div>
                     ${discount > 0 ? `
                     <div class="finance-item" style="color: #28a745;">
-                        <span class="finance-label">🏷️ Desconto Cupom:</span>
+                        <span class="finance-label">🏷️ Desconto:</span>
                         <span class="finance-value">- R$ ${formatPrice(discount)}</span>
                     </div>
                     ` : ''}
@@ -1393,7 +1419,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 summaryHTML += `
                     <div class="summary-item">
                         <div class="summary-label">🧾 Número do Pedido:</div>
-                        <div class="summary-value">#${currentOrderSummary.orderNumber}</div>
+                        <div class="summary-value">${currentOrderSummary.orderNumber}</div>
                     </div>
                 `;
             }
