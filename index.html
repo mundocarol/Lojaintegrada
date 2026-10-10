@@ -497,7 +497,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Seção do Conversor de Pedidos -->
         <div class="section">
             <div class="header">
                 <h1>🛒 Processador de Pedidos - SITE</h1>
@@ -519,12 +518,10 @@
                 <button class="btn btn-secondary" id="clearConverterBtn">🗑️ Limpar</button>
             </div>
             
-            <!-- Pré-visualização compacta -->
             <div class="preview-section">
                 <h2 style="margin-top: 0;">📋 Pré-visualização</h2>
                 <div id="previewArea" style="display: none;">
-                    <div id="previewContent"><!-- Conteúdo será gerado dinamicamente --></div>
-                    <!-- Área de dica e botão pequeno -->
+                    <div id="previewContent"></div>
                     <div class="tip-area">
                         <div class="tip-text">💡 Os dados já foram copiados para a área de inserção abaixo. Use o botão ao lado para copiar manualmente.</div>
                         <button class="btn btn-copy btn-small" id="copyBtn">📋 Copiar</button>
@@ -536,7 +533,6 @@
             </div>
         </div>
         
-        <!-- Seção do Sistema de Inserção na Planilha -->
         <div class="section">
             <div class="header">
                 <h1>📋 Sistema de Inserção de Dados</h1>
@@ -553,24 +549,20 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 <div class="counter" id="columnCounter">📊 Colunas detectadas: <span id="columnCount">0</span></div>
             </div>
             
-            <!-- Botões de Ação -->
             <div class="button-group">
                 <button class="btn btn-secondary" id="clearBtn">🗑️ Limpar Tudo</button>
                 <button class="btn btn-primary" id="submitBtn">✅ Confirmar Inserção</button>
             </div>
             
-            <!-- Loading -->
             <div class="loading" id="loadingSection">
                 <div class="spinner"> </div>
                 <p>Enviando pedido para a planilha...</p>
             </div>
             
-            <!-- Status Messages -->
             <div class="status-box" id="statusBox"> </div>
         </div>
     </div>
     
-    <!-- Modal/Popup de confirmação -->
     <div class="modal-overlay" id="confirmationModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -586,9 +578,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     📋 Resumo do Pedido
                 </h4>
                 
-                <div id="modalSummaryContent">
-                    <!-- Conteúdo do resumo será inserido aqui -->
-                </div>
+                <div id="modalSummaryContent"></div>
                 
                 <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid var(--border); font-size: 13px;">
                     <strong>⚠️ Nota:</strong> Os dados foram enviados para processamento. Verifique a planilha para confirmar a inserção completa.
@@ -683,9 +673,16 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             return totalMatch ? parsePrice(totalMatch[1]) : 0;
         }
         
+        // ✅ CORRIGIDO: Frete agora captura também o formato com quebra de linha
         function extractShipping(input) {
             if (!input) return 0;
-            const shippingMatch = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
+            
+            // Formato novo (Loja Integrada atual): "Envio via\nBelo Horizonte\n:\nR$ 17,90"
+            let shippingMatch = input.match(/Envio via[\s\S]{0,120}?:\s*R\$\s*(\d+[.,]\d{2})/);
+            if (shippingMatch) return parsePrice(shippingMatch[1]);
+            
+            // Formato antigo: "Envio via Sedex: R$ 25,00"
+            shippingMatch = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
             return shippingMatch ? parsePrice(shippingMatch[1]) : 0;
         }
         
@@ -715,27 +712,29 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             return phoneMatch ? phoneMatch[1].trim() : '';
         }
         
-        // ✅ AJUSTE 1: Nome do presenteado — novo local
+        // ✅ CORRIGIDO: Nome do presenteado
         function extractGiftedName(input) {
             if (!input) return '';
             const giftedMatch = input.match(/Nome do presenteado:\s*(.+?)(?:\n|$)/i);
             return giftedMatch ? giftedMatch[1].trim() : '';
         }
         
-        // ✅ AJUSTE 2: Telefone do presenteado — novo local
+        // ✅ CORRIGIDO: Telefone do presenteado
         function extractGiftedPhone(input) {
             if (!input) return '';
             const phoneMatch = input.match(/Telefone do presenteado:\s*(.+?)(?:\n|$)/i);
             return phoneMatch ? phoneMatch[1].trim() : '';
         }
         
+        // ✅ CORRIGIDO: Endereço + CEP da entrega (para usar como fallback na referência)
         function extractAddress(input) {
             const result = {
                 street: '',
                 complement: '',
                 neighborhood: '',
                 city: '',
-                reference: ''
+                reference: '',
+                cep: ''
             };
             
             if (!input) return result;
@@ -784,15 +783,28 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 }
             }
             
+            // CEP do endereço (linha "CEP: 30690-320")
+            const cepMatch = addressText.match(/CEP:\s*(\d{5}-?\d{3})/i);
+            if (cepMatch) result.cep = cepMatch[1].trim();
+            
+            // ✅ Referência do endereço (com fallback para CEP)
             const refMatch = input.match(/Referência:\s*(.+?)(?:\n|$)/);
-            if (refMatch) {
+            if (refMatch && refMatch[1].trim() !== '') {
                 result.reference = refMatch[1].trim();
+            } else {
+                // Se não tem referência, usa o CEP da entrega
+                const cepEntregaMatch = input.match(/CEP da entrega:\s*(\d{5}-?\d{3})/i);
+                if (cepEntregaMatch) {
+                    result.reference = cepEntregaMatch[1].trim();
+                } else if (result.cep) {
+                    result.reference = result.cep;
+                }
             }
             
             return result;
         }
         
-        // ✅ AJUSTE 3 e 4: Data da entrega + Horário da entrega — novo local
+        // ✅ CORRIGIDO: Data da entrega + Horário da entrega
         function extractDeliveryInfo(input) {
             const result = {
                 date: '',
@@ -802,6 +814,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             
             if (!input) return result;
             
+            // Data da entrega (novo formato)
             const dateMatch = input.match(/Data da entrega:\s*(\d{2}\/\d{2}\/\d{4})/i);
             if (dateMatch) {
                 result.date = dateMatch[1];
@@ -809,23 +822,23 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 result.formattedDate = `${result.date} - ${weekday}`;
             }
             
+            // Horário da entrega (novo formato)
             const timeMatch = input.match(/Hor[áa]rio da entrega:\s*(.+?)(?:\n|$)/i);
             result.time = timeMatch ? timeMatch[1].trim() : '';
             
             return result;
         }
         
-        // ✅ AJUSTE 5 (DEFINITIVO): Mensagem do cartão + Assinatura no cartão
-        // Resultado final: "mensagem\n\nassinatura"
+        // ✅ CORRIGIDO DEFINITIVO: Junta "Mensagem do cartão" + "Assinatura no cartão"
         function extractMessage(input) {
             if (!input) return '';
             
-            // Captura o texto da mensagem do cartão
+            // Captura a mensagem do cartão (texto completo até a assinatura)
             const msgMatch = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]+?)(?=\nAssinatura no cart[ãa]o:|$)/i);
             const messageText = msgMatch ? msgMatch[1].trim() : '';
             
-            // Captura o texto da assinatura do cartão
-            const sigMatch = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]+?)(?=\n\[\/AGENDAMENTO|\nPagamento via|$)/i);
+            // Captura a assinatura do cartão (texto até o final do bloco)
+            const sigMatch = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]+?)(?=\n\[\/AGENDAMENTO|\nPagamento via|\nID da transa|$)/i);
             const signatureText = sigMatch ? sigMatch[1].trim() : '';
             
             // Junta os dois com uma linha em branco entre eles
@@ -926,13 +939,34 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             };
         }
         
+        // ✅ CORRIGIDO DEFINITIVO: Forma de pagamento (pega qualquer variação)
         function detectPaymentMethod(input) {
             if (!input) return '';
             
-            if (input.includes('Pagar.me') || input.includes('Cartão')) {
+            // Tenta capturar "Pagamento via <método>" (aceita quebra de linha)
+            let match = input.match(/Pagamento via\s*\n?\s*(Pix|PIX|Cart[ãa]o[^\n]*|Boleto|Pagar\.me[^\n]*)/i);
+            if (match) {
+                const method = match[1].trim();
+                if (/pix/i.test(method)) {
+                    return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+                } else if (/cart[ãa]o|pagar\.me/i.test(method)) {
+                    return 'Link de Cartão Crédito online (vamos te enviar o link)';
+                } else if (/boleto/i.test(method)) {
+                    return 'Boleto bancário';
+                }
+                return method;
+            }
+            
+            // Fallback: procura no texto inteiro (para formato antigo)
+            // Ordem importa: Cartão antes de Pix, para não confundir
+            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(input)) {
                 return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            } else if (input.includes('Pix')) {
+            }
+            if (/\bPix\b|\bPIX\b/i.test(input)) {
                 return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            }
+            if (/Boleto/i.test(input)) {
+                return 'Boleto bancário';
             }
             
             return '';
@@ -966,7 +1000,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 
                 const productValue = total - shipping;
                 
-                // Salvar resumo para mostrar no modal
                 currentOrderSummary = {
                     orderNumber: orderNumber,
                     customerName: customerName,
@@ -1016,10 +1049,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     isAnonymous: 'Sim'
                 };
                 
-                // Criar array com 60 colunas
                 const excelColumns = new Array(60).fill('');
                 
-                // Preencher colunas conforme mapeamento
                 excelColumns[0] = result.dateTime;
                 excelColumns[1] = result.customerName;
                 excelColumns[2] = result.customerPhone;
@@ -1044,13 +1075,10 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 excelColumns[50] = result.couponInfo;
                 excelColumns[52] = result.orderNumber;
                 
-                // Gerar linha Excel
                 processedExcelLine = excelColumns.join('\t');
                 
-                // Mostrar pré-visualização
                 showPreview(result, total, shipping, coupon.amount, productValue);
                 
-                // Copiar para o campo de inserção
                 document.getElementById('dataInput').value = processedExcelLine;
                 processarDadosInput();
                 
@@ -1184,10 +1212,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             }
         }
         
-        // ============================================
-        // FUNÇÃO PRINCIPAL DE ENVIO (OTIMIZADA)
-        // ============================================
-        
         async function confirmarInsercao() {
             if (isSubmitting) return;
             
@@ -1210,31 +1234,25 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             
             mostrarStatus('⏳ Enviando dados para a planilha...', 'info');
             
-            // SEMPRE mostrar sucesso após um tempo
             setTimeout(async () => {
                 try {
-                    // Tentar enviar, mas não se preocupar com erros
                     await enviarRequisicaoJSONP({
                         action: 'inserir_pedido',
                         senha: CORRECT_PASSWORD,
                         dados: currentData
                     });
                 } catch (error) {
-                    // Ignorar erros - o pedido já pode ter sido processado
                     console.log('⚠️ Erro técnico ignorado:', error.message);
                 }
                 
-                // SEMPRE mostrar sucesso
                 submitBtn.innerHTML = '✅ CONCLUÍDO';
                 submitBtn.classList.remove('btn-primary');
                 submitBtn.classList.add('btn-success');
                 
                 mostrarStatus('✅ Pedido enviado para processamento!', 'success');
                 
-                // Mostrar modal de confirmação
                 mostrarModalConfirmacao();
                 
-                // Resetar botão após 2 segundos
                 setTimeout(() => {
                     submitBtn.innerHTML = '✅ Confirmar Inserção';
                     submitBtn.classList.remove('btn-success');
@@ -1245,12 +1263,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 
                 loadingSection.style.display = 'none';
                 
-            }, 1500); // Esperar 1.5 segundos para simular processamento
+            }, 1500);
         }
-        
-        // ============================================
-        // FUNÇÃO DE ENVIO JSONP (OTIMIZADA)
-        // ============================================
         
         function enviarRequisicaoJSONP(params) {
             return new Promise((resolve, reject) => {
@@ -1275,7 +1289,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     script.src = url;
                     script.type = 'text/javascript';
                     
-                    // Timeout curto - se demorar, assumir sucesso
                     const timeout = setTimeout(() => {
                         if (window[callbackName]) {
                             delete window[callbackName];
@@ -1283,10 +1296,9 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                         if (script.parentNode) {
                             script.parentNode.removeChild(script);
                         }
-                        // Timeout não é erro - assumir sucesso
                         console.log('⚠️ Timeout - assumindo que o pedido foi processado');
                         resolve({ success: true, message: 'Pedido enviado (timeout)' });
-                    }, 3000); // Apenas 3 segundos
+                    }, 3000);
                     
                     window[callbackName] = function(response) {
                         clearTimeout(timeout);
@@ -1296,8 +1308,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                         }
                         
                         console.log('📦 Resposta recebida do servidor');
-                        
-                        // Qualquer resposta é considerada sucesso
                         resolve({ success: true, message: 'Pedido processado com sucesso' });
                     };
                     
@@ -1309,7 +1319,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                         if (script.parentNode) {
                             script.parentNode.removeChild(script);
                         }
-                        // Erro no script também não é problema - assumir sucesso
                         console.log('⚠️ Erro técnico no carregamento - assumindo sucesso');
                         resolve({ success: true, message: 'Pedido pode ter sido processado' });
                     };
@@ -1317,22 +1326,16 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     document.head.appendChild(script);
                     
                 } catch (error) {
-                    // Qualquer exceção também é considerada sucesso
                     console.log('⚠️ Exceção capturada - assumindo sucesso:', error);
                     resolve({ success: true, message: 'Pedido enviado para processamento' });
                 }
             });
         }
         
-        // ============================================
-        // MODAL DE CONFIRMAÇÃO
-        // ============================================
-        
         function mostrarModalConfirmacao() {
             const modal = document.getElementById('confirmationModal');
             const summaryContent = document.getElementById('modalSummaryContent');
             
-            // Criar conteúdo do resumo
             let summaryHTML = '';
             
             if (currentOrderSummary.orderNumber) {
@@ -1406,8 +1409,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             }
             
             summaryContent.innerHTML = summaryHTML;
-            
-            // Mostrar o modal
             modal.style.display = 'flex';
         }
         
@@ -1415,7 +1416,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             const modal = document.getElementById('confirmationModal');
             modal.style.display = 'none';
             
-            // Limpar todos os campos
             clearConverterFields();
             document.getElementById('dataInput').value = '';
             document.getElementById('columnCount').textContent = '0';
@@ -1423,18 +1423,11 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             currentData = [];
             processedExcelLine = '';
             
-            // Focar no campo inicial
             document.getElementById('inputData').focus();
-            
-            // Resetar o resumo
             currentOrderSummary = {};
             
             mostrarStatus('🔄 Sistema limpo e pronto para novo pedido!', 'info');
         }
-        
-        // ============================================
-        // FUNÇÕES UTILITÁRIAS
-        // ============================================
         
         function mostrarStatus(message, type = 'info') {
             const statusBox = document.getElementById('statusBox');
@@ -1471,13 +1464,9 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             mostrarStatus('🗑️ Todos os campos foram limpos!', 'info');
         }
         
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - Versão Otimizada');
+            console.log('🚀 Sistema Mundo Carol - Versão Otimizada v3');
             
-            // Configurar eventos
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
             document.getElementById('clearConverterBtn').addEventListener('click', clearConverterFields);
@@ -1486,24 +1475,20 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             document.getElementById('dataInput').addEventListener('input', processarDadosInput);
             document.getElementById('modalOkBtn').addEventListener('click', fecharModalELimpar);
             
-            // Permitir Enter no conversor
             document.getElementById('inputData').addEventListener('keypress', function(e) {
                 if (e.ctrlKey && e.key === 'Enter') {
                     processData();
                 }
             });
             
-            // Fechar modal ao clicar fora
             document.getElementById('confirmationModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     fecharModalELimpar();
                 }
             });
             
-            // Mostrar mensagem inicial
             mostrarStatus('🔄 Sistema pronto! Cole os dados do pedido no conversor acima.', 'info');
             
-            // Focar no campo do conversor
             document.getElementById('inputData').focus();
         });
     </script>
