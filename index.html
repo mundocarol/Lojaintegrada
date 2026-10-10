@@ -77,7 +77,6 @@
             font-size: 1rem;
         }
         
-        /* Estilos do Conversor */
         .converter-textarea {
             width: 100%;
             min-height: 250px;
@@ -166,14 +165,13 @@
             background-color: #218838;
         }
         
-        /* Pré-visualização compacta */
         .preview-section {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
             border: 1px solid var(--border);
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
         
@@ -202,7 +200,6 @@
             font-style: italic;
         }
         
-        /* Área de dica e botão pequeno */
         .tip-area {
             display: flex;
             justify-content: space-between;
@@ -220,7 +217,6 @@
             flex: 1;
         }
         
-        /* Sistema de Inserção */
         .system-textarea {
             width: 100%;
             min-height: 120px;
@@ -369,7 +365,37 @@
             font-weight: 600;
         }
         
-        /* Modal/Popup de confirmação */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 15px;
+            font-size: 12px;
+        }
+        
+        .preview-row {
+            display: flex;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        
+        .preview-key {
+            font-weight: 600;
+            color: var(--primary-dark);
+            flex: 0 0 130px;
+        }
+        
+        .preview-val {
+            color: #333;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .preview-val.empty {
+            color: #aaa;
+            font-style: italic;
+        }
+        
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -457,53 +483,21 @@
             border: 1px solid #c8e6c9;
         }
         
-        /* Responsividade */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-                gap: 15px;
-            }
-            
-            .section {
-                padding: 15px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .preview-section {
-                max-height: 250px;
-            }
-            
-            .tip-area {
-                flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
-            }
-            
-            .converter-textarea,
-            .system-textarea {
-                font-size: 12px;
-                padding: 12px;
-                min-height: 200px;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 10px;
-            }
+            .container { padding: 10px; gap: 15px; }
+            .section { padding: 15px; }
+            .button-group { flex-direction: column; gap: 8px; }
+            .btn { width: 100%; }
+            .preview-section { max-height: 250px; }
+            .tip-area { flex-direction: column; gap: 8px; align-items: stretch; }
+            .converter-textarea, .system-textarea { font-size: 12px; padding: 12px; min-height: 200px; }
+            .modal-content { width: 95%; margin: 10px; }
+            .preview-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Seção do Conversor de Pedidos -->
         <div class="section">
             <div class="header">
                 <h1>🛒 Processador de Pedidos - SITE</h1>
@@ -525,12 +519,10 @@
                 <button class="btn btn-secondary" id="clearConverterBtn">🗑️ Limpar</button>
             </div>
             
-            <!-- Pré-visualização compacta -->
             <div class="preview-section">
                 <h2 style="margin-top: 0;">📋 Pré-visualização</h2>
                 <div id="previewArea" style="display: none;">
-                    <div id="previewContent"><!-- Conteúdo será gerado dinamicamente --></div>
-                    <!-- Área de dica e botão pequeno -->
+                    <div id="previewContent"></div>
                     <div class="tip-area">
                         <div class="tip-text">💡 Os dados já foram copiados para a área de inserção abaixo. Use o botão ao lado para copiar manualmente.</div>
                         <button class="btn btn-copy btn-small" id="copyBtn">📋 Copiar</button>
@@ -542,7 +534,6 @@
             </div>
         </div>
         
-        <!-- Seção do Sistema de Inserção na Planilha -->
         <div class="section">
             <div class="header">
                 <h1>📋 Sistema de Inserção de Dados</h1>
@@ -559,24 +550,20 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 <div class="counter" id="columnCounter">📊 Colunas detectadas: <span id="columnCount">0</span></div>
             </div>
             
-            <!-- Botões de Ação -->
             <div class="button-group">
                 <button class="btn btn-secondary" id="clearBtn">🗑️ Limpar Tudo</button>
                 <button class="btn btn-primary" id="submitBtn">✅ Confirmar Inserção</button>
             </div>
             
-            <!-- Loading -->
             <div class="loading" id="loadingSection">
-                <div class="spinner"> </div>
+                <div class="spinner"></div>
                 <p>Enviando pedido para a planilha...</p>
             </div>
             
-            <!-- Status Messages -->
-            <div class="status-box" id="statusBox"> </div>
+            <div class="status-box" id="statusBox"></div>
         </div>
     </div>
     
-    <!-- Modal/Popup de confirmação -->
     <div class="modal-overlay" id="confirmationModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -592,9 +579,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     📋 Resumo do Pedido
                 </h4>
                 
-                <div id="modalSummaryContent">
-                    <!-- Conteúdo do resumo será inserido aqui -->
-                </div>
+                <div id="modalSummaryContent"></div>
                 
                 <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid var(--border); font-size: 13px;">
                     <strong>⚠️ Nota:</strong> Os dados foram enviados para processamento. Verifique a planilha para confirmar a inserção completa.
@@ -648,7 +633,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             document.getElementById('dataInput').value = '';
             document.getElementById('columnCount').textContent = '0';
             document.getElementById('columnCounter').style.background = '#e8f0fe';
-            
             mostrarStatus('🗑️ Conversor limpo!', 'info');
         }
         
@@ -659,47 +643,28 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         function extractOrderNumber(input) {
             if (!input) return '';
             const orderMatch = input.match(/#(\d+)/);
-            if (!orderMatch) return '';
-            // Garante que retorna só os dígitos, sem "#"
-            return orderMatch[1].replace('#', '').trim();
+            return orderMatch ? orderMatch[1] : '';
         }
         
-        // ============================================
-        // EXTRAÇÃO DE CUPOM E DESCONTO PIX
-        // ============================================
         function extractCoupon(input) {
             if (!input) return { code: '', amount: 0 };
             
-            // Tenta cupom primeiro
+            // Cupom normal
             const cupomMatch = input.match(/Desconto via cupom\s+([A-Z0-9]+)/i);
-            
-            let couponCode = '';
-            let discountAmount = 0;
-            
             if (cupomMatch) {
-                couponCode = cupomMatch[1].trim();
+                const couponCode = cupomMatch[1].trim();
+                let discountAmount = 0;
                 const discountMatch = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
                 if (discountMatch) {
-                    discountAmount = parsePrice(discountMatch[1]);
-                    discountAmount = Math.abs(discountAmount);
+                    discountAmount = Math.abs(parsePrice(discountMatch[1]));
                 }
                 return { code: couponCode, amount: discountAmount };
             }
             
-            // Se não for cupom, tenta desconto via PIX
-            const pixMatch = input.match(/(?:Desconto|Desc\.?)\s*(?:via\s*)?(?:PIX|Pix)[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/i);
+            // Desconto via Pix (novo formato)
+            const pixMatch = input.match(/Desconto via Pix:\s*R\$\s*-?(\d+[.,]\d{2})/i);
             if (pixMatch) {
-                discountAmount = parsePrice(pixMatch[1]);
-                discountAmount = Math.abs(discountAmount);
-                return { code: 'PIX', amount: discountAmount };
-            }
-            
-            // Tenta formato genérico "Desconto: R$ X,XX"
-            const genericMatch = input.match(/Desconto[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/i);
-            if (genericMatch) {
-                discountAmount = parsePrice(genericMatch[1]);
-                discountAmount = Math.abs(discountAmount);
-                return { code: 'DESCONTO', amount: discountAmount };
+                return { code: 'PIX', amount: Math.abs(parsePrice(pixMatch[1])) };
             }
             
             return { code: '', amount: 0 };
@@ -713,7 +678,13 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         
         function extractShipping(input) {
             if (!input) return 0;
-            const shippingMatch = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
+            
+            // Formato novo: "Envio via\nBelo Horizonte\n:\nR$ 17,90"
+            let shippingMatch = input.match(/Envio via[\s\S]{0,120}?:\s*R\$\s*(\d+[.,]\d{2})/);
+            if (shippingMatch) return parsePrice(shippingMatch[1]);
+            
+            // Formato antigo
+            shippingMatch = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
             return shippingMatch ? parsePrice(shippingMatch[1]) : 0;
         }
         
@@ -729,7 +700,26 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             
             for (let i = lines.length - 1; i >= 0; i--) {
                 const line = lines[i];
-                if (!line.match(/#\d+/) && !line.match(/Criado em/)) {
+                if (!line.match(/#\d+/) && 
+                    !line.match(/Criado em/) &&
+                    !line.match(/Situação do pedido/) &&
+                    !line.match(/^Pago$/) &&
+                    !line.match(/^Envio via/) &&
+                    !line.match(/^Digite o código/) &&
+                    !line.match(/^Enviar$/) &&
+                    !line.match(/^Prazo de entrega/) &&
+                    !line.match(/^Mensagem do cliente/) &&
+                    !line.match(/^Observação do carrinho/) &&
+                    !line.match(/^\[/) &&
+                    !line.match(/^CEP da entrega/) &&
+                    !line.match(/^Data da entrega/) &&
+                    !line.match(/^Horário da entrega/) &&
+                    !line.match(/^Nome do presenteado/) &&
+                    !line.match(/^Telefone do presenteado/) &&
+                    !line.match(/^Enviar cartão/) &&
+                    !line.match(/^\[\//) &&
+                    !line.match(/^Pagamento via/) &&
+                    !line.match(/^ID da transação/)) {
                     return line;
                 }
             }
@@ -739,103 +729,32 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         
         function extractPhone(input) {
             if (!input) return '';
-            const phoneMatch = input.match(/Telefone celular:\s*([\d\s\-\(\)]+)/);
+            const phoneMatch = input.match(/Telefone celular:\s*\n?\s*([\d\s\-\(\)]+)/);
             return phoneMatch ? phoneMatch[1].trim() : '';
         }
         
-        // ============================================
-        // EXTRAÇÃO DO BLOCO [AGENDAMENTO DA ENTREGA]
-        // ============================================
-        function extractAgendamento(input) {
-            const result = {
-                cep: '',
-                deliveryDate: '',
-                deliveryDateRaw: '',
-                deliveryTime: '',
-                giftedName: '',
-                giftedPhone: '',
-                sendCard: 'Não',   // "Sim"/"Não" — indica se leva mensagem no cartão
-                message: '',       // mensagem + assinatura no final, mesma célula
-                messageOnly: '',
-                signature: ''
-            };
-
-            if (!input) return result;
-
-            const blocoMatch = input.match(/\[AGENDAMENTO DA ENTREGA\]([\s\S]*?)\[\/AGENDAMENTO DA ENTREGA\]/i);
-            const bloco = blocoMatch ? blocoMatch[1] : '';
-
-            const pegarValor = (fonte, rotulo) => {
-                if (!fonte) return '';
-                const regex = new RegExp(rotulo + '\\s*:\\s*(.*)', 'i');
-                const m = fonte.match(regex);
-                return m ? m[1].trim() : '';
-            };
-
-            if (bloco) {
-                result.cep             = pegarValor(bloco, 'CEP da entrega');
-                result.deliveryDateRaw = pegarValor(bloco, 'Data da entrega');
-                result.deliveryTime    = pegarValor(bloco, 'Horário da entrega');
-                result.giftedName      = pegarValor(bloco, 'Nome do presenteado');
-                result.giftedPhone     = pegarValor(bloco, 'Telefone do presenteado');
-
-                const enviarCartaoRaw = pegarValor(bloco, 'Enviar cartão');
-                result.sendCard = /sim/i.test(enviarCartaoRaw) ? 'Sim' : 'Não';
-
-                if (result.sendCard === 'Sim') {
-                    // Mensagem do cartão: tudo após "Mensagem do cartão:" até "Assinatura no cartão:" (ou fim do bloco)
-                    const msgMatch = bloco.match(/Mensagem do cartão\s*:\s*([\s\S]*?)(?=\nAssinatura no cartão\s*:|$)/i);
-                    // Assinatura: tudo após "Assinatura no cartão:"
-                    const assinaturaMatch = bloco.match(/Assinatura no cartão\s*:\s*([\s\S]*?)$/i);
-
-                    const msg = msgMatch ? msgMatch[1].trim() : '';
-                    const assinatura = assinaturaMatch ? assinaturaMatch[1].trim() : '';
-
-                    result.messageOnly = msg;
-                    result.signature   = assinatura;
-
-                    // Salva SEMPRE na mesma célula: mensagem + quebra de linha + assinatura no final
-                    if (msg && assinatura) {
-                        result.message = msg + '\n' + assinatura;
-                    } else if (msg) {
-                        result.message = msg;
-                    } else if (assinatura) {
-                        result.message = assinatura;
-                    }
-                }
-
-                if (result.deliveryDateRaw && /^\d{2}\/\d{2}\/\d{4}$/.test(result.deliveryDateRaw)) {
-                    const weekday = getWeekdayName(result.deliveryDateRaw);
-                    result.deliveryDate = `${result.deliveryDateRaw} - ${weekday}`;
-                }
-
-                return result;
-            }
-
-            // FALLBACK: formato antigo
-            const giftedMatch = input.match(/Nome da pessoa presenteada:\s*(.+?)(?:\n|$)/);
-            if (giftedMatch) result.giftedName = giftedMatch[1].trim();
-
-            const phoneGiftedMatch = input.match(/Telefone da pessoa presenteada:\s*(.+?)(?:\n|$)/);
-            if (phoneGiftedMatch) result.giftedPhone = phoneGiftedMatch[1].trim();
-
-            const dateMatch = input.match(/Data:\s*(\d{2}\/\d{2}\/\d{4})/);
-            if (dateMatch) {
-                result.deliveryDateRaw = dateMatch[1];
-                const weekday = getWeekdayName(result.deliveryDateRaw);
-                result.deliveryDate = `${result.deliveryDateRaw} - ${weekday}`;
-            }
-
-            const timeMatch = input.match(/Periodo:\s*(.+?)(?:\n|$)/);
-            if (timeMatch) result.deliveryTime = timeMatch[1].trim();
-
-            const msgMatch = input.match(/Mensagem:\s*([\s\S]+?)(?=\nAgendamento:|$)/);
-            if (msgMatch) {
-                result.message = msgMatch[1].trim().replace(/\n/g, ' ');
-                result.messageOnly = result.message;
-            }
-
-            return result;
+        function extractGiftedName(input) {
+            if (!input) return '';
+            
+            // Novo formato
+            let match = input.match(/Nome do presenteado:\s*(.+?)(?:\n|$)/i);
+            if (match) return match[1].trim();
+            
+            // Formato antigo
+            match = input.match(/Nome da pessoa presenteada:\s*(.+?)(?:\n|$)/i);
+            return match ? match[1].trim() : '';
+        }
+        
+        function extractGiftedPhone(input) {
+            if (!input) return '';
+            
+            // Novo formato
+            let match = input.match(/Telefone do presenteado:\s*(.+?)(?:\n|$)/i);
+            if (match) return match[1].trim();
+            
+            // Formato antigo
+            match = input.match(/Telefone da pessoa presenteada:\s*(.+?)(?:\n|$)/i);
+            return match ? match[1].trim() : '';
         }
         
         function extractAddress(input) {
@@ -844,7 +763,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 complement: '',
                 neighborhood: '',
                 city: '',
-                reference: ''
+                reference: '',
+                cep: ''
             };
             
             if (!input) return result;
@@ -893,9 +813,82 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 }
             }
             
+            // CEP do endereço
+            const cepMatch = addressText.match(/CEP:\s*(\d{5}-?\d{3})/i);
+            if (cepMatch) result.cep = cepMatch[1].trim();
+            
             const refMatch = input.match(/Referência:\s*(.+?)(?:\n|$)/);
             if (refMatch) {
                 result.reference = refMatch[1].trim();
+            }
+            
+            return result;
+        }
+        
+        function extractDeliveryInfo(input) {
+            const result = {
+                date: '',
+                formattedDate: '',
+                time: ''
+            };
+            
+            if (!input) return result;
+            
+            // NOVO FORMATO
+            let dateMatch = input.match(/Data da entrega:\s*(\d{2}\/\d{2}\/\d{4})/i);
+            if (!dateMatch) {
+                dateMatch = input.match(/Data:\s*(\d{2}\/\d{2}\/\d{4})/i);
+            }
+            
+            if (dateMatch) {
+                result.date = dateMatch[1];
+                const weekday = getWeekdayName(result.date);
+                result.formattedDate = `${result.date} - ${weekday}`;
+            }
+            
+            // NOVO FORMATO
+            let timeMatch = input.match(/Hor[áa]rio da entrega:\s*(.+?)(?:\n|$)/i);
+            if (!timeMatch) {
+                timeMatch = input.match(/Periodo:\s*(.+?)(?:\n|$)/i);
+            }
+            result.time = timeMatch ? timeMatch[1].trim() : '';
+            
+            return result;
+        }
+        
+        function extractMessage(input) {
+            if (!input) return { message: '', signature: '', sendCard: '', cep: '', scheduleBlock: '' };
+            
+            const result = {
+                message: '',
+                signature: '',
+                sendCard: '',
+                cep: '',
+                scheduleBlock: ''
+            };
+            
+            // Capturar bloco inteiro [AGENDAMENTO DA ENTREGA]
+            const blockMatch = input.match(/\[AGENDAMENTO DA ENTREGA\]([\s\S]+?)\[\/AGENDAMENTO DA ENTREGA\]/i);
+            if (blockMatch) {
+                result.scheduleBlock = blockMatch[1].trim();
+                
+                const cep = blockMatch[1].match(/CEP da entrega:\s*(\d{5}-?\d{3})/i);
+                if (cep) result.cep = cep[1].trim();
+                
+                const sendCard = blockMatch[1].match(/Enviar cart[ãa]o:\s*(Sim|N[ãa]o)/i);
+                if (sendCard) result.sendCard = sendCard[1].trim();
+            }
+            
+            // Mensagem do cliente (texto do cartão)
+            const msgMatch = input.match(/Mensagem do cliente\s*\n?(?:Observa[çc][ãa]o do carrinho:)?\s*\n?([\s\S]+?)(?=\nPagamento via|\nID da transa|\n[A-Z][a-z]+ [A-Z][a-z]+|$)/i);
+            if (msgMatch) {
+                result.message = msgMatch[1].trim();
+            }
+            
+            // Assinatura
+            const sigMatch = input.match(/(?:Assinatura|De):\s*(.+?)(?:\n|$)/i);
+            if (sigMatch) {
+                result.signature = sigMatch[1].trim();
             }
             
             return result;
@@ -908,64 +901,65 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             if (!productSection) return { productName: '', productsList: [] };
             
             const productsText = productSection[0];
-            const lines = productsText.split('\n');
+            const lines = productsText.split('\n').map(l => l.trim()).filter(l => l !== '');
+            
             const productMap = new Map();
+            let currentProduct = null;
+            let lastProductName = '';
             
             for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
+                const line = lines[i];
                 
-                if (!line || 
-                    line.includes('Produtos') || 
-                    line.includes('SKU:') || 
-                    line.includes('Qtd:') ||
-                    line.includes('Subtotal:') ||
-                    line.includes('Disponibilidade:') ||
-                    line.includes('Peso e dimensões:') ||
-                    line.match(/^R\$\s*\d+[.,]\d{2}$/) ||
-                    line.includes('Desconto via')) {
-                    continue;
-                }
+                // Nova linha de produto: nome + " - 905" (código no final)
+                const productLineMatch = line.match(/^(.+?)\s*-\s*(\d{2,4})$/);
                 
-                if (line.length > 10 && !line.match(/^\s*R\$/)) {
+                if (productLineMatch && 
+                    !line.match(/SKU:|Qtd:|R\$|Desconto|Disponibilidade|Peso|CEP|Data|Horário|Nome|Telefone|Enviar/i)) {
                     
-                    const isDuplicate = i > 0 && 
-                        Math.abs(lines[i-1].trim().length - line.length) < 5 &&
-                        lines[i-1].trim().substring(0, 20) === line.substring(0, 20);
+                    const name = productLineMatch[1].trim();
+                    const codeFromName = productLineMatch[2].trim();
                     
-                    if (isDuplicate) {
+                    // Evitar duplicata: se for igual ao último produto adicionado, pular
+                    if (lastProductName === `${name}|${codeFromName}`) {
                         continue;
                     }
+                    lastProductName = `${name}|${codeFromName}`;
                     
-                    let productCode = null;
-                    let productName = line;
+                    currentProduct = {
+                        name: name,
+                        codeFromName: codeFromName,
+                        sku: '',
+                        quantity: 1,
+                        originalPrice: 0,
+                        promoPrice: 0
+                    };
                     
-                    const codMatch = line.match(/(?:Cód|cod)\s*([A-Z]?\d{2,3})/i);
-                    if (codMatch) {
-                        productCode = codMatch[1];
-                        productName = line.replace(new RegExp(`(?:Cód|cod)\\s*${productCode}`, 'gi'), '').trim();
-                    } else {
-                        const numberMatch = line.match(/\b([A-Z]?\d{2,3})\b/);
-                        if (numberMatch) {
-                            productCode = numberMatch[1];
-                            productName = line.replace(new RegExp(`\\s${productCode}\\b`), '').trim();
-                        }
+                    // Procurar SKU nas próximas linhas
+                    for (let j = i + 1; j < Math.min(i + 8, lines.length); j++) {
+                        const skuMatch = lines[j].match(/^SKU:\s*(.+)$/i);
+                        if (skuMatch) { currentProduct.sku = skuMatch[1].trim(); break; }
                     }
                     
-                    productName = productName.replace(/\s+/g, ' ').trim();
-                    productName = productName.replace(/\s-\s*$/, '').trim();
-                    
-                    if (productName && productCode) {
-                        if (productMap.has(productCode)) {
-                            const existing = productMap.get(productCode);
-                            existing.quantity += 1;
-                        } else {
-                            const product = {
-                                name: productName,
-                                code: productCode,
-                                quantity: 1
-                            };
-                            productMap.set(productCode, product);
+                    // Procurar preços
+                    for (let j = i + 1; j < Math.min(i + 14, lines.length); j++) {
+                        const priceMatch = lines[j].match(/^R\$\s*(\d+[.,]\d{2})$/);
+                        if (priceMatch) {
+                            const price = parsePrice(priceMatch[1]);
+                            if (currentProduct.originalPrice === 0) {
+                                currentProduct.originalPrice = price;
+                            } else if (currentProduct.promoPrice === 0) {
+                                currentProduct.promoPrice = price;
+                            }
                         }
+                        const qtdMatch = lines[j].match(/^Qtd:\s*(\d+)/i);
+                        if (qtdMatch) { currentProduct.quantity = parseInt(qtdMatch[1]); break; }
+                    }
+                    
+                    const finalCode = currentProduct.sku || currentProduct.codeFromName;
+                    if (productMap.has(finalCode)) {
+                        productMap.get(finalCode).quantity += currentProduct.quantity;
+                    } else {
+                        productMap.set(finalCode, currentProduct);
                     }
                 }
             }
@@ -975,8 +969,12 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             let productName = '';
             if (productsList.length > 0) {
                 const totalKits = productsList.reduce((sum, prod) => sum + prod.quantity, 0);
-                const codesString = productsList.map(p => `${p.quantity}x${p.code}`).join('-');
-                const descriptions = productsList.map(p => `${p.quantity}x ${p.code} ${p.name}`).join(' | ');
+                const codesString = productsList.map(p => `${p.quantity}x${p.sku || p.codeFromName}`).join('-');
+                const descriptions = productsList.map(p => {
+                    const code = p.sku || p.codeFromName;
+                    const priceInfo = p.promoPrice > 0 ? ` (R$ ${formatPrice(p.promoPrice)})` : '';
+                    return `${p.quantity}x ${code} ${p.name}${priceInfo}`;
+                }).join(' | ');
                 const kitText = totalKits === 1 ? 'Kit' : 'Kits';
                 productName = `(${totalKits} ${kitText} ${codesString}) - ${descriptions}`;
             }
@@ -987,22 +985,27 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             };
         }
         
-        // ============================================
-        // DETECÇÃO DA FORMA DE PAGAMENTO
-        // (Pagar.me / Cartão / Pix — comportamento
-        //  original restaurado, sem se confundir
-        //  com "Enviar cartão:")
-        // ============================================
         function detectPaymentMethod(input) {
             if (!input) return '';
             
-            // Remove o bloco do agendamento para não confundir
-            // "Enviar cartão:" / "Assinatura no cartão:" com forma de pagamento
-            const inputSemAgendamento = input.replace(/\[AGENDAMENTO DA ENTREGA\][\s\S]*?\[\/AGENDAMENTO DA ENTREGA\]/i, '');
+            // Novo formato: "Pagamento via\nPix"
+            let match = input.match(/Pagamento via\s*\n?\s*(Pix|Cart[ãa]o[^\n]*|Boleto|Pagar\.me[^\n]*)/i);
+            if (match) {
+                const method = match[1].trim();
+                if (/pix/i.test(method)) {
+                    return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+                } else if (/cart[ãa]o|pagar\.me/i.test(method)) {
+                    return 'Link de Cartão Crédito online (vamos te enviar o link)';
+                } else if (/boleto/i.test(method)) {
+                    return 'Boleto bancário';
+                }
+                return method;
+            }
             
-            if (inputSemAgendamento.includes('Pagar.me') || inputSemAgendamento.includes('Cartão')) {
+            // Fallback formato antigo
+            if (input.includes('Pagar.me') || input.includes('Cartão')) {
                 return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            } else if (inputSemAgendamento.includes('Pix') || inputSemAgendamento.includes('PIX')) {
+            } else if (input.includes('Pix')) {
                 return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
             }
             
@@ -1027,26 +1030,26 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 const shipping = extractShipping(input);
                 const customerName = extractCustomerName(input);
                 const customerPhone = extractPhone(input);
-                
-                // Extração unificada do agendamento (nome/telefone presenteado, data, hora, cartão)
-                const agendamento = extractAgendamento(input);
-                const giftedName = agendamento.giftedName;
-                const giftedPhone = agendamento.giftedPhone;
-                const delivery = {
-                    date: agendamento.deliveryDateRaw,
-                    formattedDate: agendamento.deliveryDate,
-                    time: agendamento.deliveryTime
-                };
-                const message = agendamento.message;   // mensagem + \n + assinatura
-                const hasCard = agendamento.sendCard;  // "Sim"/"Não" -> coluna 17
-                
+                const giftedName = extractGiftedName(input);
+                const giftedPhone = extractGiftedPhone(input);
                 const address = extractAddress(input);
+                const delivery = extractDeliveryInfo(input);
+                const msgData = extractMessage(input);
                 const products = extractProducts(input);
                 const paymentMethod = detectPaymentMethod(input);
                 
+                // CPF e Email
+                const cpfMatch = input.match(/CPF:\s*([\d\.\-]+)/i);
+                const cpf = cpfMatch ? cpfMatch[1].trim() : '';
+                const emailMatch = input.match(/E-mail:\s*(\S+@\S+)/i);
+                const email = emailMatch ? emailMatch[1].trim() : '';
+                
+                // ID da transação
+                const transMatch = input.match(/ID da transa[çc][ãa]o:\s*(\S+)/i);
+                const transId = transMatch ? transMatch[1].trim() : '';
+                
                 const productValue = total - shipping;
                 
-                // Salvar resumo para mostrar no modal
                 currentOrderSummary = {
                     orderNumber: orderNumber,
                     customerName: customerName,
@@ -1063,8 +1066,13 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     street: address.street,
                     neighborhood: address.neighborhood,
                     city: address.city,
+                    cep: address.cep,
                     productsCount: products.productsList.length,
-                    paymentMethod: paymentMethod
+                    paymentMethod: paymentMethod,
+                    cpf: cpf,
+                    email: email,
+                    transId: transId,
+                    sendCard: msgData.sendCard
                 };
                 
                 const result = {
@@ -1081,25 +1089,32 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     shippingPrice: formatPrice(shipping),
                     couponCode: coupon.code,
                     couponAmount: formatPrice(coupon.amount),
-                    couponInfo: coupon.code ? `CUPOM: ${coupon.code} - Desconto de R$ ${formatPrice(coupon.amount)}` : '',
+                    couponInfo: coupon.code ? (coupon.code === 'PIX' 
+                        ? `DESCONTO PIX: R$ ${formatPrice(coupon.amount)}` 
+                        : `CUPOM: ${coupon.code} - Desconto de R$ ${formatPrice(coupon.amount)}`) : '',
                     street: address.street,
                     complement: address.complement,
                     neighborhood: address.neighborhood,
                     city: address.city,
+                    cep: address.cep,
                     reference: address.reference,
                     deliveryDate: delivery.formattedDate,
                     deliveryTime: delivery.time,
-                    message: message,
-                    hasMessage: hasCard,   // "Sim"/"Não" do Enviar cartão
+                    message: msgData.message,
+                    signature: msgData.signature,
+                    sendCard: msgData.sendCard,
+                    hasMessage: msgData.message.trim() !== '' ? 'Sim' : 'Não',
                     paymentMethod: paymentMethod,
                     source: 'SITE',
-                    isAnonymous: 'Sim'
+                    isAnonymous: 'Sim',
+                    cpf: cpf,
+                    email: email,
+                    transId: transId
                 };
                 
                 // Criar array com 60 colunas
                 const excelColumns = new Array(60).fill('');
                 
-                // Preencher colunas conforme mapeamento
                 excelColumns[0] = result.dateTime;
                 excelColumns[1] = result.customerName;
                 excelColumns[2] = result.customerPhone;
@@ -1116,21 +1131,18 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 excelColumns[14] = result.reference;
                 excelColumns[15] = result.deliveryDate;
                 excelColumns[16] = result.deliveryTime;
-                excelColumns[17] = result.hasMessage;   // "Sim"/"Não" do Enviar cartão
-                excelColumns[18] = result.message;      // mensagem + \n + assinatura no final
-                excelColumns[32] = result.paymentMethod; // forma de pagamento (Pagar.me / Pix / Cartão)
+                excelColumns[17] = result.hasMessage;
+                excelColumns[18] = result.message;
+                excelColumns[32] = result.paymentMethod;
                 excelColumns[46] = result.source;
                 excelColumns[48] = result.isAnonymous;
                 excelColumns[50] = result.couponInfo;
                 excelColumns[52] = result.orderNumber;
                 
-                // Gerar linha Excel
                 processedExcelLine = excelColumns.join('\t');
                 
-                // Mostrar pré-visualização
                 showPreview(result, total, shipping, coupon.amount, productValue);
                 
-                // Copiar para o campo de inserção
                 document.getElementById('dataInput').value = processedExcelLine;
                 processarDadosInput();
                 
@@ -1150,36 +1162,60 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             previewArea.style.display = 'block';
             noPreview.style.display = 'none';
             
-            let previewHTML = '';
+            const row = (label, value) => {
+                const v = value && String(value).trim() !== '' ? value : '—';
+                const cls = value && String(value).trim() !== '' ? '' : 'empty';
+                return `<div class="preview-row"><div class="preview-key">${label}</div><div class="preview-val ${cls}">${v}</div></div>`;
+            };
             
-            previewHTML += `
-                <div class="finance-summary">
-                    <div class="finance-item">
-                        <span class="finance-label">🧾 Número do Pedido:</span>
-                        <span class="finance-value">${result.orderNumber || 'N/A'}</span>
-                    </div>
-                    <div class="finance-item">
-                        <span class="finance-label">💰 Total do Pedido:</span>
-                        <span class="finance-value">R$ ${formatPrice(total)}</span>
-                    </div>
-                    <div class="finance-item">
-                        <span class="finance-label">🚚 Frete:</span>
-                        <span class="finance-value">- R$ ${formatPrice(shipping)}</span>
-                    </div>
-                    ${discount > 0 ? `
-                    <div class="finance-item" style="color: #28a745;">
-                        <span class="finance-label">🏷️ Desconto:</span>
-                        <span class="finance-value">- R$ ${formatPrice(discount)}</span>
-                    </div>
-                    ` : ''}
-                    <div class="finance-item" style="font-weight: bold; border-top: 1px solid #c8e6c9; padding-top: 5px; margin-top: 5px;">
-                        <span class="finance-label">🛒 VALOR PRODUTOS:</span>
-                        <span class="finance-value">R$ ${formatPrice(productValue)}</span>
-                    </div>
-                </div>
-            `;
+            let html = '';
             
-            previewContent.innerHTML = previewHTML;
+            // Financeiro
+            html += `<div class="finance-summary">`;
+            html += `<div class="finance-item"><span class="finance-label">💰 Total:</span><span class="finance-value">R$ ${formatPrice(total)}</span></div>`;
+            html += `<div class="finance-item"><span class="finance-label">🚚 Frete:</span><span class="finance-value">- R$ ${formatPrice(shipping)}</span></div>`;
+            if (discount > 0) {
+                html += `<div class="finance-item" style="color:#28a745;"><span class="finance-label">🏷️ Desconto:</span><span class="finance-value">- R$ ${formatPrice(discount)}</span></div>`;
+            }
+            html += `<div class="finance-item" style="font-weight:bold;border-top:1px solid #c8e6c9;padding-top:5px;margin-top:5px;"><span class="finance-label">🛒 Produtos:</span><span class="finance-value">R$ ${formatPrice(productValue)}</span></div>`;
+            html += `</div>`;
+            
+            // Grid de dados
+            html += `<div class="preview-grid">`;
+            html += row('🧾 Pedido', result.orderNumber ? '#' + result.orderNumber : '');
+            html += row('📅 Criado em', result.dateTime);
+            html += row('👤 Cliente', result.customerName);
+            html += row('📞 Telefone', result.customerPhone);
+            html += row('📄 CPF', result.cpf);
+            html += row('✉️ E-mail', result.email);
+            html += row('💳 Pagamento', result.paymentMethod);
+            html += row('🔑 ID Transação', result.transId);
+            html += row('🛍️ Produto', result.productName);
+            html += row('🎁 Presenteado', result.giftedName);
+            html += row('📱 Tel. Presenteado', result.giftedPhone);
+            html += row('💌 Enviar Cartão', result.sendCard);
+            html += row('📝 Tem Mensagem', result.hasMessage);
+            html += row('✍️ Assinatura', result.signature);
+            html += row('🏠 Rua', result.street);
+            html += row('🏢 Complemento', result.complement);
+            html += row('🏘️ Bairro', result.neighborhood);
+            html += row('🌆 Cidade', result.city);
+            html += row('📮 CEP', result.cep);
+            html += row('📍 Referência', result.reference);
+            html += row('📆 Data Entrega', result.deliveryDate);
+            html += row('⏰ Horário', result.deliveryTime);
+            html += row('🏷️ Cupom', result.couponInfo);
+            html += `</div>`;
+            
+            // Mensagem completa
+            if (result.message) {
+                html += `<div style="margin-top:12px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:6px;font-size:12px;">`;
+                html += `<div style="font-weight:600;color:var(--primary);margin-bottom:5px;">💬 Mensagem do Cliente:</div>`;
+                html += `<div style="white-space:pre-wrap;color:#333;">${result.message}</div>`;
+                html += `</div>`;
+            }
+            
+            previewContent.innerHTML = html;
         }
         
         function copyToClipboard() {
@@ -1264,10 +1300,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             }
         }
         
-        // ============================================
-        // FUNÇÃO PRINCIPAL DE ENVIO (OTIMIZADA)
-        // ============================================
-        
         async function confirmarInsercao() {
             if (isSubmitting) return;
             
@@ -1290,31 +1322,25 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             
             mostrarStatus('⏳ Enviando dados para a planilha...', 'info');
             
-            // SEMPRE mostrar sucesso após um tempo
             setTimeout(async () => {
                 try {
-                    // Tentar enviar, mas não se preocupar com erros
                     await enviarRequisicaoJSONP({
                         action: 'inserir_pedido',
                         senha: CORRECT_PASSWORD,
                         dados: currentData
                     });
                 } catch (error) {
-                    // Ignorar erros - o pedido já pode ter sido processado
                     console.log('⚠️ Erro técnico ignorado:', error.message);
                 }
                 
-                // SEMPRE mostrar sucesso
                 submitBtn.innerHTML = '✅ CONCLUÍDO';
                 submitBtn.classList.remove('btn-primary');
                 submitBtn.classList.add('btn-success');
                 
                 mostrarStatus('✅ Pedido enviado para processamento!', 'success');
                 
-                // Mostrar modal de confirmação
                 mostrarModalConfirmacao();
                 
-                // Resetar botão após 2 segundos
                 setTimeout(() => {
                     submitBtn.innerHTML = '✅ Confirmar Inserção';
                     submitBtn.classList.remove('btn-success');
@@ -1325,12 +1351,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 
                 loadingSection.style.display = 'none';
                 
-            }, 1500); // Esperar 1.5 segundos para simular processamento
+            }, 1500);
         }
-        
-        // ============================================
-        // FUNÇÃO DE ENVIO JSONP (OTIMIZADA)
-        // ============================================
         
         function enviarRequisicaoJSONP(params) {
             return new Promise((resolve, reject) => {
@@ -1355,50 +1377,33 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     script.src = url;
                     script.type = 'text/javascript';
                     
-                    // Timeout curto - se demorar, assumir sucesso
                     const timeout = setTimeout(() => {
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                        }
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        // Timeout não é erro - assumir sucesso
-                        console.log('⚠️ Timeout - assumindo que o pedido foi processado');
+                        if (window[callbackName]) delete window[callbackName];
+                        if (script.parentNode) script.parentNode.removeChild(script);
+                        console.log('⚠️ Timeout - assumindo sucesso');
                         resolve({ success: true, message: 'Pedido enviado (timeout)' });
-                    }, 3000); // Apenas 3 segundos
+                    }, 3000);
                     
                     window[callbackName] = function(response) {
                         clearTimeout(timeout);
                         delete window[callbackName];
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        
-                        console.log('📦 Resposta recebida do servidor');
-                        
-                        // Qualquer resposta é considerada sucesso
+                        if (script.parentNode) script.parentNode.removeChild(script);
+                        console.log('📦 Resposta recebida');
                         resolve({ success: true, message: 'Pedido processado com sucesso' });
                     };
                     
                     script.onerror = function() {
                         clearTimeout(timeout);
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                        }
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        // Erro no script também não é problema - assumir sucesso
-                        console.log('⚠️ Erro técnico no carregamento - assumindo sucesso');
+                        if (window[callbackName]) delete window[callbackName];
+                        if (script.parentNode) script.parentNode.removeChild(script);
+                        console.log('⚠️ Erro técnico - assumindo sucesso');
                         resolve({ success: true, message: 'Pedido pode ter sido processado' });
                     };
                     
                     document.head.appendChild(script);
                     
                 } catch (error) {
-                    // Qualquer exceção também é considerada sucesso
-                    console.log('⚠️ Exceção capturada - assumindo sucesso:', error);
+                    console.log('⚠️ Exceção capturada:', error);
                     resolve({ success: true, message: 'Pedido enviado para processamento' });
                 }
             });
@@ -1412,82 +1417,36 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             const modal = document.getElementById('confirmationModal');
             const summaryContent = document.getElementById('modalSummaryContent');
             
-            // Criar conteúdo do resumo
             let summaryHTML = '';
             
             if (currentOrderSummary.orderNumber) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🧾 Número do Pedido:</div>
-                        <div class="summary-value">${currentOrderSummary.orderNumber}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">🧾 Número do Pedido:</div><div class="summary-value">#${currentOrderSummary.orderNumber}</div></div>`;
             }
-            
             if (currentOrderSummary.customerName) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">👤 Cliente:</div>
-                        <div class="summary-value">${currentOrderSummary.customerName}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">👤 Cliente:</div><div class="summary-value">${currentOrderSummary.customerName}</div></div>`;
             }
-            
             if (currentOrderSummary.customerPhone) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">📞 Telefone:</div>
-                        <div class="summary-value">${currentOrderSummary.customerPhone}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">📞 Telefone:</div><div class="summary-value">${currentOrderSummary.customerPhone}</div></div>`;
             }
-            
             if (currentOrderSummary.productsCount > 0) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🛍️ Produtos:</div>
-                        <div class="summary-value">${currentOrderSummary.productsCount} produto(s)</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">🛍️ Produtos:</div><div class="summary-value">${currentOrderSummary.productsCount} produto(s)</div></div>`;
             }
-            
-            summaryHTML += `
-                <div class="summary-item">
-                    <div class="summary-label">💰 Valor Total:</div>
-                    <div class="summary-value">R$ ${currentOrderSummary.total}</div>
-                </div>
-            `;
+            summaryHTML += `<div class="summary-item"><div class="summary-label">💰 Valor Total:</div><div class="summary-value">R$ ${currentOrderSummary.total}</div></div>`;
             
             if (currentOrderSummary.giftedName) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🎁 Presenteado:</div>
-                        <div class="summary-value">${currentOrderSummary.giftedName}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">🎁 Presenteado:</div><div class="summary-value">${currentOrderSummary.giftedName}</div></div>`;
             }
-            
             if (currentOrderSummary.deliveryDate) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">📅 Entrega:</div>
-                        <div class="summary-value">${currentOrderSummary.deliveryDate} ${currentOrderSummary.deliveryTime ? `(${currentOrderSummary.deliveryTime})` : ''}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">📅 Entrega:</div><div class="summary-value">${currentOrderSummary.deliveryDate} ${currentOrderSummary.deliveryTime ? `(${currentOrderSummary.deliveryTime})` : ''}</div></div>`;
             }
-            
             if (currentOrderSummary.paymentMethod) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">💳 Pagamento:</div>
-                        <div class="summary-value">${currentOrderSummary.paymentMethod}</div>
-                    </div>
-                `;
+                summaryHTML += `<div class="summary-item"><div class="summary-label">💳 Pagamento:</div><div class="summary-value">${currentOrderSummary.paymentMethod}</div></div>`;
+            }
+            if (currentOrderSummary.couponCode) {
+                summaryHTML += `<div class="summary-item"><div class="summary-label">🏷️ Desconto:</div><div class="summary-value">${currentOrderSummary.couponCode} - R$ ${currentOrderSummary.couponAmount}</div></div>`;
             }
             
             summaryContent.innerHTML = summaryHTML;
-            
-            // Mostrar o modal
             modal.style.display = 'flex';
         }
         
@@ -1495,19 +1454,15 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             const modal = document.getElementById('confirmationModal');
             modal.style.display = 'none';
             
-            // Limpar todos os campos
             clearConverterFields();
             document.getElementById('dataInput').value = '';
             document.getElementById('columnCount').textContent = '0';
             document.getElementById('columnCounter').style.background = '#e8f0fe';
             currentData = [];
             processedExcelLine = '';
-            
-            // Focar no campo inicial
-            document.getElementById('inputData').focus();
-            
-            // Resetar o resumo
             currentOrderSummary = {};
+            
+            document.getElementById('inputData').focus();
             
             mostrarStatus('🔄 Sistema limpo e pronto para novo pedido!', 'info');
         }
@@ -1521,15 +1476,10 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             
             statusBox.className = 'status-box';
             
-            if (type === 'success') {
-                statusBox.classList.add('status-success');
-            } else if (type === 'error') {
-                statusBox.classList.add('status-error');
-            } else if (type === 'warning') {
-                statusBox.classList.add('status-warning');
-            } else {
-                statusBox.classList.add('status-info');
-            }
+            if (type === 'success') statusBox.classList.add('status-success');
+            else if (type === 'error') statusBox.classList.add('status-error');
+            else if (type === 'warning') statusBox.classList.add('status-warning');
+            else statusBox.classList.add('status-info');
             
             statusBox.innerHTML = message;
             statusBox.style.display = 'block';
@@ -1555,9 +1505,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
         // INICIALIZAÇÃO
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - Versão Otimizada');
+            console.log('🚀 Sistema Mundo Carol - Versão Otimizada v2');
             
-            // Configurar eventos
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
             document.getElementById('clearConverterBtn').addEventListener('click', clearConverterFields);
@@ -1566,24 +1515,20 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             document.getElementById('dataInput').addEventListener('input', processarDadosInput);
             document.getElementById('modalOkBtn').addEventListener('click', fecharModalELimpar);
             
-            // Permitir Enter no conversor
             document.getElementById('inputData').addEventListener('keypress', function(e) {
                 if (e.ctrlKey && e.key === 'Enter') {
                     processData();
                 }
             });
             
-            // Fechar modal ao clicar fora
             document.getElementById('confirmationModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     fecharModalELimpar();
                 }
             });
             
-            // Mostrar mensagem inicial
             mostrarStatus('🔄 Sistema pronto! Cole os dados do pedido no conversor acima.', 'info');
             
-            // Focar no campo do conversor
             document.getElementById('inputData').focus();
         });
     </script>
