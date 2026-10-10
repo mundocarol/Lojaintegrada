@@ -721,16 +721,105 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             return phoneMatch ? phoneMatch[1].trim() : '';
         }
         
-        function extractGiftedName(input) {
-            if (!input) return '';
+        // ============================================
+        // EXTRAÇÃO DO BLOCO [AGENDAMENTO DA ENTREGA]
+        // (NOVO FORMATO - substitui as antigas
+        //  extractGiftedName / extractGiftedPhone /
+        //  extractDeliveryInfo / extractMessage)
+        // ============================================
+        function extractAgendamento(input) {
+            const result = {
+                cep: '',
+                deliveryDate: '',      // formatada com dia da semana
+                deliveryDateRaw: '',   // só a data
+                deliveryTime: '',
+                giftedName: '',
+                giftedPhone: '',
+                sendCard: 'Não',
+                message: '',           // mensagem + assinatura (mesma célula, com \n)
+                messageOnly: '',
+                signature: ''
+            };
+
+            if (!input) return result;
+
+            // 1) Tenta pegar o bloco novo [AGENDAMENTO DA ENTREGA]
+            const blocoMatch = input.match(/\[AGENDAMENTO DA ENTREGA\]([\s\S]*?)\[\/AGENDAMENTO DA ENTREGA\]/i);
+            const bloco = blocoMatch ? blocoMatch[1] : '';
+
+            // Função auxiliar: pega o valor após os ":" de uma linha com o rótulo
+            const pegarValor = (fonte, rotulo) => {
+                if (!fonte) return '';
+                const regex = new RegExp(rotulo + '\\s*:\\s*(.*)', 'i');
+                const m = fonte.match(regex);
+                return m ? m[1].trim() : '';
+            };
+
+            if (bloco) {
+                // ---- Formato NOVO (dentro da Observação do carrinho) ----
+                result.cep             = pegarValor(bloco, 'CEP da entrega');
+                result.deliveryDateRaw = pegarValor(bloco, 'Data da entrega');
+                result.deliveryTime    = pegarValor(bloco, 'Horário da entrega');
+                result.giftedName      = pegarValor(bloco, 'Nome do presenteado');
+                result.giftedPhone     = pegarValor(bloco, 'Telefone do presenteado');
+
+                const enviarCartaoRaw = pegarValor(bloco, 'Enviar cartão');
+                result.sendCard = /sim/i.test(enviarCartaoRaw) ? 'Sim' : 'Não';
+
+                if (result.sendCard === 'Sim') {
+                    // Pega a mensagem (tudo após "Mensagem do cartão:" até a próxima linha de rótulo)
+                    const msgMatch = bloco.match(/Mensagem do cartão\s*:\s*([\s\S]*?)(?=\nAssinatura no cartão\s*:|\n\[|$)/i);
+                    const assinaturaMatch = bloco.match(/Assinatura no cartão\s*:\s*([\s\S]*?)(?=\n\[|$)/i);
+
+                    const msg = msgMatch ? msgMatch[1].trim() : '';
+                    const assinatura = assinaturaMatch ? assinaturaMatch[1].trim() : '';
+
+                    result.messageOnly = msg;
+                    result.signature   = assinatura;
+
+                    // Salva mensagem + quebra de linha + assinatura na MESMA célula
+                    if (msg && assinatura) {
+                        result.message = msg + '\n' + assinatura;
+                    } else if (msg) {
+                        result.message = msg;
+                    } else if (assinatura) {
+                        result.message = assinatura;
+                    }
+                }
+
+                // Formata data com dia da semana
+                if (result.deliveryDateRaw && /^\d{2}\/\d{2}\/\d{4}$/.test(result.deliveryDateRaw)) {
+                    const weekday = getWeekdayName(result.deliveryDateRaw);
+                    result.deliveryDate = `${result.deliveryDateRaw} - ${weekday}`;
+                }
+
+                return result;
+            }
+
+            // ---- FALLBACK: formato ANTIGO (mantém compatibilidade) ----
             const giftedMatch = input.match(/Nome da pessoa presenteada:\s*(.+?)(?:\n|$)/);
-            return giftedMatch ? giftedMatch[1].trim() : '';
-        }
-        
-        function extractGiftedPhone(input) {
-            if (!input) return '';
-            const phoneMatch = input.match(/Telefone da pessoa presenteada:\s*(.+?)(?:\n|$)/);
-            return phoneMatch ? phoneMatch[1].trim() : '';
+            if (giftedMatch) result.giftedName = giftedMatch[1].trim();
+
+            const phoneGiftedMatch = input.match(/Telefone da pessoa presenteada:\s*(.+?)(?:\n|$)/);
+            if (phoneGiftedMatch) result.giftedPhone = phoneGiftedMatch[1].trim();
+
+            const dateMatch = input.match(/Data:\s*(\d{2}\/\d{2}\/\d{4})/);
+            if (dateMatch) {
+                result.deliveryDateRaw = dateMatch[1];
+                const weekday = getWeekdayName(result.deliveryDateRaw);
+                result.deliveryDate = `${result.deliveryDateRaw} - ${weekday}`;
+            }
+
+            const timeMatch = input.match(/Periodo:\s*(.+?)(?:\n|$)/);
+            if (timeMatch) result.deliveryTime = timeMatch[1].trim();
+
+            const msgMatch = input.match(/Mensagem:\s*([\s\S]+?)(?=\nAgendamento:|$)/);
+            if (msgMatch) {
+                result.message = msgMatch[1].trim().replace(/\n/g, ' ');
+                result.messageOnly = result.message;
+            }
+
+            return result;
         }
         
         function extractAddress(input) {
@@ -794,34 +883,6 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             }
             
             return result;
-        }
-        
-        function extractDeliveryInfo(input) {
-            const result = {
-                date: '',
-                formattedDate: '',
-                time: ''
-            };
-            
-            if (!input) return result;
-            
-            const dateMatch = input.match(/Data:\s*(\d{2}\/\d{2}\/\d{4})/);
-            if (dateMatch) {
-                result.date = dateMatch[1];
-                const weekday = getWeekdayName(result.date);
-                result.formattedDate = `${result.date} - ${weekday}`;
-            }
-            
-            const timeMatch = input.match(/Periodo:\s*(.+?)(?:\n|$)/);
-            result.time = timeMatch ? timeMatch[1].trim() : '';
-            
-            return result;
-        }
-        
-        function extractMessage(input) {
-            if (!input) return '';
-            const messageMatch = input.match(/Mensagem:\s*([\s\S]+?)(?=\nAgendamento:|$)/);
-            return messageMatch ? messageMatch[1].trim().replace(/\n/g, ' ') : '';
         }
         
         function extractProducts(input) {
@@ -940,11 +1001,20 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 const shipping = extractShipping(input);
                 const customerName = extractCustomerName(input);
                 const customerPhone = extractPhone(input);
-                const giftedName = extractGiftedName(input);
-                const giftedPhone = extractGiftedPhone(input);
+                
+                // NOVO: extração unificada do agendamento
+                const agendamento = extractAgendamento(input);
+                const giftedName = agendamento.giftedName;
+                const giftedPhone = agendamento.giftedPhone;
+                const delivery = {
+                    date: agendamento.deliveryDateRaw,
+                    formattedDate: agendamento.deliveryDate,
+                    time: agendamento.deliveryTime
+                };
+                const message = agendamento.message;
+                const hasCard = agendamento.sendCard;
+                
                 const address = extractAddress(input);
-                const delivery = extractDeliveryInfo(input);
-                const message = extractMessage(input);
                 const products = extractProducts(input);
                 const paymentMethod = detectPaymentMethod(input);
                 
@@ -994,7 +1064,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     deliveryDate: delivery.formattedDate,
                     deliveryTime: delivery.time,
                     message: message,
-                    hasMessage: message.trim() !== '' ? 'Sim' : 'Não',
+                    hasMessage: hasCard,   // "Sim"/"Não" do Enviar cartão
                     paymentMethod: paymentMethod,
                     source: 'SITE',
                     isAnonymous: 'Sim'
@@ -1020,8 +1090,8 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 excelColumns[14] = result.reference;
                 excelColumns[15] = result.deliveryDate;
                 excelColumns[16] = result.deliveryTime;
-                excelColumns[17] = result.hasMessage;
-                excelColumns[18] = result.message;
+                excelColumns[17] = result.hasMessage;   // "Sim"/"Não" do Enviar cartão
+                excelColumns[18] = result.message;      // mensagem + \n + assinatura
                 excelColumns[32] = result.paymentMethod;
                 excelColumns[46] = result.source;
                 excelColumns[48] = result.isAnonymous;
