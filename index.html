@@ -288,7 +288,7 @@
                 3. <strong>Duplicatas removidas:</strong> Produtos repetidos são contados apenas uma vez<br />
                 4. <strong>Enviar cartão:</strong> Capturado e salvo na coluna R<br />
                 5. <strong>CEP do endereço:</strong> Capturado e salvo na coluna AJ<br />
-                6. <strong>Mensagem + Assinatura:</strong> Salvos juntos na mesma célula
+                6. <strong>Mensagem do cartão:</strong> Assinatura salva junto na mesma célula
             </div>
             
             <textarea class="converter-textarea" id="inputData" placeholder="Cole aqui todo o conteúdo do pedido do site..."></textarea>
@@ -418,14 +418,9 @@
         // EXTRAÇÃO DE DADOS
         // ============================================
         
-        // ✅ CORRIGIDO: Nº do pedido com fallback
         function extractOrderNumber(input) {
             if (!input) return '';
-            // Tenta #9943 primeiro (formato do site)
-            let m = input.match(/#(\d+)/);
-            if (m) return m[1];
-            // Fallback: procura "Pedido" ou "Nº"
-            m = input.match(/(?:Pedido|Nº|N°)\s*:?\s*(\d+)/i);
+            const m = input.match(/#(\d+)/);
             return m ? m[1] : '';
         }
         
@@ -486,11 +481,7 @@
                     !l.match(/^\[\//) &&
                     !l.match(/^Pagamento via/) &&
                     !l.match(/^Pix$/) &&
-                    !l.match(/^PIX$/) &&
-                    !l.match(/^Pagar\.me/) &&
-                    !l.match(/^Boleto/) &&
-                    !l.match(/^Cart[ãa]o/) &&
-                    !l.match(/^ID da transa/)) {
+                    !l.match(/^ID da transação/)) {
                     return l;
                 }
             }
@@ -547,9 +538,11 @@
                 if (cityParts.length > 1) result.city = cityParts[1].trim().split('/')[0].trim();
             }
             
+            // CEP do endereço
             const cepM = addrText.match(/CEP:\s*(\d{5}-?\d{3})/i);
             if (cepM) result.cep = cepM[1].trim();
             
+            // Referência (fallback CEP entrega ou CEP endereço)
             const refM = input.match(/Referência:\s*(.+?)(?:\n|$)/);
             if (refM && refM[1].trim() !== '') {
                 result.reference = refM[1].trim();
@@ -578,22 +571,17 @@
             return result;
         }
         
-        // ✅ CORRIGIDO: Mensagem + Assinatura juntas
+        // ✅ Mensagem do cartão + Assinatura (mesma célula)
         function extractMessage(input) {
             if (!input) return '';
             
-            let messageText = '';
-            let signatureText = '';
+            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]+?)(?=\nAssinatura no cart[ãa]o:|$)/i);
+            const messageText = msgM ? msgM[1].trim() : '';
             
-            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]*?)(?=\n\s*Assinatura no cart[ãa]o:|$)/i);
-            if (msgM) messageText = msgM[1].trim();
+            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]+?)(?=\n\[\/AGENDAMENTO|\nPagamento via|\nID da transa|$)/i);
+            const signatureText = sigM ? sigM[1].trim() : '';
             
-            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]*?)(?=\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|$)/i);
-            if (sigM) signatureText = sigM[1].trim();
-            
-            if (messageText && signatureText) {
-                return messageText + '\n\n' + signatureText;
-            }
+            if (messageText && signatureText) return messageText + '\n\n' + signatureText;
             if (messageText) return messageText;
             if (signatureText) return signatureText;
             return '';
@@ -659,13 +647,9 @@
             return { productName, productsList: list };
         }
         
-        // ✅ CORRIGIDO: Forma de pagamento robusta
         function detectPaymentMethod(input) {
             if (!input) return '';
-            // Normaliza
-            const normalized = input.replace(/\r/g, '');
-            // Captura a linha APÓS "Pagamento via" (aceita quebra de linha)
-            const m = normalized.match(/Pagamento via[\s\n]+([^\n]+)/i);
+            const m = input.match(/Pagamento via\s*\n?\s*(Pix|PIX|Cart[ãa]o[^\n]*|Boleto|Pagar\.me[^\n]*)/i);
             if (m) {
                 const method = m[1].trim();
                 if (/pix/i.test(method)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
@@ -673,10 +657,9 @@
                 if (/boleto/i.test(method)) return 'Boleto bancário';
                 return method;
             }
-            // Fallback
-            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(normalized)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            if (/\bPix\b|\bPIX\b/i.test(normalized)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
-            if (/Boleto/i.test(normalized)) return 'Boleto bancário';
+            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(input)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
+            if (/\bPix\b|\bPIX\b/i.test(input)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            if (/Boleto/i.test(input)) return 'Boleto bancário';
             return '';
         }
         
@@ -753,7 +736,7 @@
                     hasMessage: message.trim() !== '' ? 'Sim' : 'Não',
                     paymentMethod,
                     source: 'SITE',
-                    isAnonymous: ''
+                    isAnonymous: 'Sim'
                 };
                 
                 // ✅ 69 COLUNAS
@@ -786,7 +769,7 @@
                 c[45] = result.couponCode;          // AT - Cupom desconto
                 c[46] = result.source;              // AU - Nos ajude a melhorar
                 // AV (47) vazia
-                c[48] = result.isAnonymous;         // AW - Presente anônimo (vazio)
+                c[48] = result.isAnonymous;         // AW - Presente anônimo
                 // AX (49) vazia
                 c[50] = result.couponInfo;          // AY - CUPOM DESCONTO OU BRINDE
                 // AZ (51) vazia
@@ -852,6 +835,8 @@
             html += row('🅰️🅹 CEP Endereço', result.cep);
             html += row('🅰️🆃 Cupom', result.couponCode);
             html += row('🅰️🆄 Source', result.source);
+            html += row('🅰️🆆 Anônimo', result.isAnonymous);
+            html += row('🅰️🆈 Info Cupom', result.couponInfo);
             html += row('🅱️🅰️ Nº Pedido', result.orderNumber);
             html += `</div>`;
             
@@ -932,7 +917,6 @@
             
             setTimeout(async () => {
                 try {
-                    // ✅ USA 'action' (como no BKP que funcionava)
                     await enviarRequisicaoJSONP({
                         action: 'inserir_pedido',
                         senha: CORRECT_PASSWORD,
@@ -1056,7 +1040,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - v8 (baseado no BKP + correções)');
+            console.log('🚀 Sistema Mundo Carol - v4 (69 colunas)');
             
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
