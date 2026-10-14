@@ -94,11 +94,11 @@
             </div>
             
             <div class="info-box">
-                <strong>✅ SISTEMA OTIMIZADO v6:</strong><br />
-                1. <strong>Número do pedido:</strong> Captura #9943 corretamente<br />
+                <strong>✅ SISTEMA OTIMIZADO v7:</strong><br />
+                1. <strong>Nº do pedido:</strong> Captura #9943 corretamente<br />
                 2. <strong>Forma de pagamento:</strong> Lê linha por linha após "Pagamento via"<br />
-                3. <strong>Mensagem + Assinatura:</strong> Sempre juntas na mesma célula<br />
-                4. <strong>Frete e Total:</strong> Aceita quebras de linha do site novo<br />
+                3. <strong>Mensagem + Assinatura:</strong> SEMPRE juntas (quebras escapadas)<br />
+                4. <strong>Frete e Total:</strong> Aceitam quebras de linha do site<br />
                 5. <strong>Nome do cliente:</strong> Captura após "ID da transação"
             </div>
             
@@ -187,6 +187,10 @@
         const CORRECT_PASSWORD = '562938';
         const TOTAL_COLUMNS = 69;
         
+        // ✅ Marcador para substituir quebras de linha
+        const QB_MARK = '⟪QB⟫';
+        const TAB_MARK = '⟪TAB⟫';
+        
         let currentData = [];
         let processedExcelLine = '';
         let isSubmitting = false;
@@ -200,6 +204,20 @@
         function normalizeText(input) {
             if (!input) return '';
             return input.replace(/\r/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
+        }
+        
+        // ✅ Escapa quebras de linha e tabs para não quebrar a planilha
+        function esc(v) {
+            if (v === null || v === undefined) return '';
+            return String(v)
+                .replace(/\r?\n/g, QB_MARK)
+                .replace(/\t/g, TAB_MARK);
+        }
+        
+        // ✅ Desescapa (para exibição na pré-visualização)
+        function unesc(v) {
+            if (!v) return '';
+            return String(v).replace(new RegExp(QB_MARK, 'g'), '\n').replace(new RegExp(TAB_MARK, 'g'), '\t');
         }
         
         function getWeekdayName(dateStr) {
@@ -232,17 +250,14 @@
         }
         
         // ============================================
-        // EXTRAÇÃO DE DADOS - v6
+        // EXTRAÇÃO DE DADOS - v7
         // ============================================
         
-        // ✅ Nº do pedido: pega #9943 do topo, sem #
         function extractOrderNumber(input) {
             if (!input) return '';
             const normalized = normalizeText(input);
-            // Primeira linha: "#9943 - Criado em..."
             let m = normalized.match(/^#(\d+)/m);
             if (m) return m[1];
-            // Fallback: qualquer #numero
             m = normalized.match(/#(\d+)/);
             if (m) return m[1];
             return '';
@@ -260,35 +275,25 @@
             return { code, amount };
         }
         
-        // ✅ Total: aceita quebra de linha
         function extractTotal(input) {
             if (!input) return 0;
             const normalized = normalizeText(input);
-            // Com quebra de linha
             let m = normalized.match(/Total:\s*\n\s*R\$\s*(\d+[.,]\d{2})/);
             if (m) return parsePrice(m[1]);
-            // Sem quebra
             m = normalized.match(/Total:\s*R\$\s*(\d+[.,]\d{2})/);
             return m ? parsePrice(m[1]) : 0;
         }
         
-        // ✅ Frete: aceita quebra de linha
         function extractShipping(input) {
             if (!input) return 0;
             const normalized = normalizeText(input);
-            
-            // Padrão: "Envio via\nBH - FRETE GRÁTIS\n:\nR$ 0,00"
             let m = normalized.match(/Envio via[\s\S]{0,200}?:\s*R\$\s*(\d+[.,]\d{2})/);
             if (m) return parsePrice(m[1]);
-            
-            // Padrão: "Envio via BH - FRETE GRÁTIS: R$ 0,00"
             m = normalized.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
             if (m) return parsePrice(m[1]);
-            
             return 0;
         }
         
-        // ✅ Nome do cliente: após "ID da transação: XXX"
         function extractCustomerName(input) {
             if (!input) return '';
             const normalized = normalizeText(input);
@@ -384,11 +389,9 @@
                 if (cityParts.length > 1) result.city = cityParts[1].trim().split('/')[0].trim();
             }
             
-            // CEP do endereço
             const cepM = addrText.match(/CEP:\s*(\d{5}-?\d{3})/i);
             if (cepM) result.cep = cepM[1].trim();
             
-            // Referência (fallback CEP entrega ou CEP endereço)
             const refM = normalized.match(/Referência:\s*(.+?)(?:\n|$)/);
             if (refM && refM[1].trim() !== '') {
                 result.reference = refM[1].trim();
@@ -418,7 +421,7 @@
             return result;
         }
         
-        // ✅ Mensagem do cartão + Assinatura SEMPRE juntas
+        // ✅ Mensagem + Assinatura SEMPRE juntas
         function extractMessage(input) {
             if (!input) return '';
             const normalized = normalizeText(input);
@@ -426,15 +429,12 @@
             let messageText = '';
             let signatureText = '';
             
-            // Captura mensagem do cartão (até "Assinatura no cartão:")
             const msgM = normalized.match(/Mensagem do cart[ãa]o:\s*([\s\S]*?)(?=\n\s*Assinatura no cart[ãa]o:|$)/i);
             if (msgM) messageText = msgM[1].trim();
             
-            // Captura assinatura (até [/AGENDAMENTO] ou próxima seção)
             const sigM = normalized.match(/Assinatura no cart[ãa]o:\s*([\s\S]*?)(?=\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|$)/i);
             if (sigM) signatureText = sigM[1].trim();
             
-            // Junta: mensagem + linha em branco + assinatura
             if (messageText && signatureText) {
                 return messageText + '\n\n' + signatureText;
             }
@@ -504,13 +504,12 @@
             return { productName, productsList: list };
         }
         
-        // ✅ Forma de pagamento: lê linha por linha (mais robusto)
+        // ✅ Forma de pagamento: lê linha por linha
         function detectPaymentMethod(input) {
             if (!input) return '';
             const normalized = normalizeText(input);
             const lines = normalized.split('\n').map(l => l.trim());
             
-            // Procura "Pagamento via" e pega a próxima linha não vazia
             for (let i = 0; i < lines.length; i++) {
                 if (/^Pagamento via$/i.test(lines[i])) {
                     for (let j = i + 1; j < lines.length; j++) {
@@ -532,7 +531,6 @@
                 }
             }
             
-            // Fallback: procura no texto todo
             if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(normalized)) {
                 return 'Link de Cartão Crédito online (vamos te enviar o link)';
             }
@@ -619,45 +617,38 @@
                     source: 'SITE'
                 };
                 
-                // ✅ 69 COLUNAS
+                // ✅ 69 COLUNAS COM QUEBRAS ESCAPADAS
                 const c = new Array(TOTAL_COLUMNS).fill('');
                 
-                c[0]  = result.dateTime;            // A - Carimbo
-                c[1]  = result.customerName;        // B - Nome Comprador
-                c[2]  = result.customerPhone;       // C - Telefone Comprador
-                c[3]  = result.productName;         // D - Código/Descrição
-                c[4]  = result.productPrice;        // E - Preço produto
-                c[5]  = result.shippingPrice;       // F - Frete
-                c[6]  = result.source;              // G - Coluna 1
-                c[7]  = '';                         // H - Entregador
-                c[8]  = result.giftedName;          // I - Nome Presenteado
-                c[9]  = result.giftedPhone;         // J - Telefone Presenteado
-                c[10] = result.street;              // K - Rua
-                c[11] = result.complement;          // L - Complemento
-                c[12] = result.neighborhood;        // M - Bairro
-                c[13] = result.city;                // N - Cidade
-                c[14] = result.reference;           // O - Ponto de Referência
-                c[15] = result.deliveryDate;        // P - Data da entrega
-                c[16] = result.deliveryTime;        // Q - Horário
-                c[17] = result.sendCard;            // R - Enviar cartão (Sim/Não)
-                c[18] = result.message;             // S - Mensagem + Assinatura
-                // T–AF (19–31) vazias
-                c[32] = result.paymentMethod;       // AG - Forma pagamento
-                // AH–AI (33–34) vazias
-                c[35] = result.cep;                 // AJ - CEP DO ENDEREÇO
-                // AK–AS (36–44) vazias
-                c[45] = result.couponCode;          // AT - Cupom desconto
-                c[46] = result.source;              // AU - Nos ajude a melhorar
-                // AV (47) vazia
-                c[48] = '';                         // AW - Presente anônimo (vazio)
-                // AX (49) vazia
-                // AY (50) - CUPOM DESCONTO OU BRINDE (vazio)
-                // AZ (51) vazia
-                c[52] = result.orderNumber;         // BA - NÚMERO DO PEDIDO (sem #)
-                // BB–BQ (53–68) vazias
+                c[0]  = esc(result.dateTime);            // A
+                c[1]  = esc(result.customerName);        // B
+                c[2]  = esc(result.customerPhone);       // C
+                c[3]  = esc(result.productName);         // D
+                c[4]  = esc(result.productPrice);        // E
+                c[5]  = esc(result.shippingPrice);       // F
+                c[6]  = esc(result.source);              // G
+                c[7]  = '';                              // H
+                c[8]  = esc(result.giftedName);          // I
+                c[9]  = esc(result.giftedPhone);         // J
+                c[10] = esc(result.street);              // K
+                c[11] = esc(result.complement);          // L
+                c[12] = esc(result.neighborhood);        // M
+                c[13] = esc(result.city);                // N
+                c[14] = esc(result.reference);           // O
+                c[15] = esc(result.deliveryDate);        // P
+                c[16] = esc(result.deliveryTime);        // Q
+                c[17] = esc(result.sendCard);            // R
+                c[18] = esc(result.message);             // S - Mensagem + Assinatura (COM ⟪QB⟫)
+                c[32] = esc(result.paymentMethod);       // AG
+                c[35] = esc(result.cep);                 // AJ
+                c[45] = esc(result.couponCode);          // AT
+                c[46] = esc(result.source);              // AU
+                c[48] = '';                              // AW - vazio
+                c[52] = esc(result.orderNumber);         // BA - Nº do pedido
                 
                 processedExcelLine = c.join('\t');
                 
+                // ✅ Pré-visualização: desescapa para mostrar formatado
                 showPreview(result, total, shipping, coupon.amount, productValue);
                 document.getElementById('dataInput').value = processedExcelLine;
                 processarDadosInput();
@@ -676,8 +667,10 @@
             document.getElementById('noPreview').style.display = 'none';
             
             const row = (label, value) => {
-                const v = value && String(value).trim() !== '' ? value : '—';
-                const cls = value && String(value).trim() !== '' ? '' : 'empty';
+                // ✅ Desescapa para exibição
+                const displayValue = unesc(value);
+                const v = displayValue && String(displayValue).trim() !== '' ? displayValue : '—';
+                const cls = displayValue && String(displayValue).trim() !== '' ? '' : 'empty';
                 return `<div class="preview-row"><div class="preview-key">${label}</div><div class="preview-val ${cls}">${v}</div></div>`;
             };
             
@@ -796,7 +789,7 @@
             setTimeout(async () => {
                 try {
                     await enviarRequisicaoJSONP({
-                        action: 'inserir_pedido',
+                        tipo: 'inserir_pedido',  // ✅ Usa 'tipo' em vez de 'action'
                         senha: CORRECT_PASSWORD,
                         dados: currentData
                     });
@@ -918,7 +911,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - v6 (69 colunas)');
+            console.log('🚀 Sistema Mundo Carol - v7 (69 colunas com escape)');
             
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
