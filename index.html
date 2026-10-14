@@ -288,7 +288,7 @@
                 3. <strong>Duplicatas removidas:</strong> Produtos repetidos são contados apenas uma vez<br />
                 4. <strong>Enviar cartão:</strong> Capturado e salvo na coluna R<br />
                 5. <strong>CEP do endereço:</strong> Capturado e salvo na coluna AJ<br />
-                6. <strong>Mensagem do cartão:</strong> Assinatura salva junto na mesma célula
+                6. <strong>Mensagem + Assinatura:</strong> Sempre juntas na mesma célula
             </div>
             
             <textarea class="converter-textarea" id="inputData" placeholder="Cole aqui todo o conteúdo do pedido do site..."></textarea>
@@ -418,10 +418,19 @@
         // EXTRAÇÃO DE DADOS
         // ============================================
         
+        // ✅ CORRIGIDO: Número do pedido sem #
         function extractOrderNumber(input) {
             if (!input) return '';
-            const m = input.match(/#(\d+)/);
-            return m ? m[1] : '';
+            
+            // Tenta #9943 (formato do site)
+            let m = input.match(/#(\d+)/);
+            if (m) return m[1];
+            
+            // Fallback: procura "Pedido" ou "Nº"
+            m = input.match(/(?:Pedido|Nº|N°|Numero|Número)\s*:?\s*(\d+)/i);
+            if (m) return m[1];
+            
+            return '';
         }
         
         function extractCoupon(input) {
@@ -444,12 +453,23 @@
             return m ? parsePrice(m[1]) : 0;
         }
         
+        // ✅ CORRIGIDO: Valor do frete mais robusto
         function extractShipping(input) {
             if (!input) return 0;
-            let m = input.match(/Envio via[\s\S]{0,120}?:\s*R\$\s*(\d+[.,]\d{2})/);
+            
+            // Padrão 1: "Envio via ... : R$ XX,XX"
+            let m = input.match(/Envio via[\s\S]{0,150}?:\s*R\$\s*(\d+[.,]\d{2})/);
             if (m) return parsePrice(m[1]);
+            
+            // Padrão 2: "Envio via ... R$ XX,XX"
             m = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
-            return m ? parsePrice(m[1]) : 0;
+            if (m) return parsePrice(m[1]);
+            
+            // Padrão 3: "Frete: R$ XX,XX"
+            m = input.match(/Frete:\s*R\$\s*(\d+[.,]\d{2})/i);
+            if (m) return parsePrice(m[1]);
+            
+            return 0;
         }
         
         function extractCustomerName(input) {
@@ -571,17 +591,29 @@
             return result;
         }
         
-        // ✅ Mensagem do cartão + Assinatura (mesma célula)
+        // ✅ CORRIGIDO: Mensagem do cartão + Assinatura SEMPRE juntas
         function extractMessage(input) {
             if (!input) return '';
             
-            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]+?)(?=\nAssinatura no cart[ãa]o:|$)/i);
-            const messageText = msgM ? msgM[1].trim() : '';
+            let messageText = '';
+            let signatureText = '';
             
-            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]+?)(?=\n\[\/AGENDAMENTO|\nPagamento via|\nID da transa|$)/i);
-            const signatureText = sigM ? sigM[1].trim() : '';
+            // Captura a mensagem do cartão (tudo entre "Mensagem do cartão:" e "Assinatura no cartão:" ou próxima seção)
+            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]*?)(?=\n\s*Assinatura no cart[ãa]o:|\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|$)/i);
+            if (msgM) {
+                messageText = msgM[1].trim();
+            }
             
-            if (messageText && signatureText) return messageText + '\n\n' + signatureText;
+            // Captura a assinatura (tudo entre "Assinatura no cartão:" e próxima seção)
+            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]*?)(?=\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|\n\s*Detalhes do cliente|$)/i);
+            if (sigM) {
+                signatureText = sigM[1].trim();
+            }
+            
+            // Junta: mensagem + linha em branco + assinatura
+            if (messageText && signatureText) {
+                return messageText + '\n\n' + signatureText;
+            }
             if (messageText) return messageText;
             if (signatureText) return signatureText;
             return '';
@@ -647,19 +679,45 @@
             return { productName, productsList: list };
         }
         
+        // ✅ CORRIGIDO: Forma de pagamento mais robusta
         function detectPaymentMethod(input) {
             if (!input) return '';
-            const m = input.match(/Pagamento via\s*\n?\s*(Pix|PIX|Cart[ãa]o[^\n]*|Boleto|Pagar\.me[^\n]*)/i);
+            
+            // Captura a linha após "Pagamento via" (pode ter quebras de linha)
+            const m = input.match(/Pagamento via\s*[\n\r]+\s*([^\n\r]+)/i);
+            
             if (m) {
                 const method = m[1].trim();
-                if (/pix/i.test(method)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
-                if (/cart[ãa]o|pagar\.me/i.test(method)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
-                if (/boleto/i.test(method)) return 'Boleto bancário';
+                
+                // PIX (qualquer variação)
+                if (/pix/i.test(method)) {
+                    return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+                }
+                
+                // Cartão / Pagar.me (qualquer variação)
+                if (/cart[ãa]o|pagar\.me|pagar me/i.test(method)) {
+                    return 'Link de Cartão Crédito online (vamos te enviar o link)';
+                }
+                
+                // Boleto
+                if (/boleto/i.test(method)) {
+                    return 'Boleto bancário';
+                }
+                
                 return method;
             }
-            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(input)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            if (/\bPix\b|\bPIX\b/i.test(input)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
-            if (/Boleto/i.test(input)) return 'Boleto bancário';
+            
+            // Fallbacks no texto todo
+            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(input)) {
+                return 'Link de Cartão Crédito online (vamos te enviar o link)';
+            }
+            if (/\bPix\b|\bPIX\b/i.test(input)) {
+                return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            }
+            if (/Boleto/i.test(input)) {
+                return 'Boleto bancário';
+            }
+            
             return '';
         }
         
@@ -771,9 +829,9 @@
                 // AV (47) vazia
                 c[48] = result.isAnonymous;         // AW - Presente anônimo
                 // AX (49) vazia
-                c[50] = result.couponInfo;          // AY - CUPOM DESCONTO OU BRINDE
+                // AY (50) - CUPOM DESCONTO OU BRINDE - DEIXAR VAZIO
                 // AZ (51) vazia
-                c[52] = result.orderNumber;         // BA - NÚMERO DO PEDIDO
+                c[52] = result.orderNumber;         // BA - NÚMERO DO PEDIDO (sem #)
                 // BB–BQ (53–68) vazias
                 
                 processedExcelLine = c.join('\t');
@@ -836,7 +894,6 @@
             html += row('🅰️🆃 Cupom', result.couponCode);
             html += row('🅰️🆄 Source', result.source);
             html += row('🅰️🆆 Anônimo', result.isAnonymous);
-            html += row('🅰️🆈 Info Cupom', result.couponInfo);
             html += row('🅱️🅰️ Nº Pedido', result.orderNumber);
             html += `</div>`;
             
@@ -1040,7 +1097,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - v4 (69 colunas)');
+            console.log('🚀 Sistema Mundo Carol - v5 (69 colunas)');
             
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
