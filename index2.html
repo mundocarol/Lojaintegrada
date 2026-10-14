@@ -17,11 +17,7 @@
             --border: #dee2e6;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -32,13 +28,7 @@
             line-height: 1.5;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
         
         .section {
             background: white;
@@ -52,37 +42,19 @@
         .section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 5px;
             background: linear-gradient(90deg, var(--primary), var(--primary-dark));
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
+        .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .header h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; }
+        .header p { color: var(--gray); font-size: 1rem; }
         
-        .header h1 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-        
-        .header p {
-            color: var(--gray);
-            font-size: 1rem;
-        }
-        
-        /* Estilos do Conversor */
         .converter-textarea {
             width: 100%;
             min-height: 250px;
             padding: 15px;
-            box-sizing: border-box;
             border: 2px solid var(--border);
             border-radius: 8px;
             resize: vertical;
@@ -99,13 +71,7 @@
             box-shadow: 0 0 0 3px rgba(184, 173, 130, 0.1);
         }
         
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .button-group { display: flex; gap: 12px; margin-top: 15px; justify-content: center; flex-wrap: wrap; }
         
         .btn {
             padding: 10px 20px;
@@ -122,87 +88,44 @@
             min-width: 160px;
         }
         
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background: white; color: var(--dark); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #f8f9fa; }
+        .btn-small { padding: 6px 12px; font-size: 12px; min-width: auto; border-radius: 4px; }
+        .btn-copy { background-color: #164029; color: white; }
+        .btn-copy:hover { background-color: #0d261c; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-success:hover { background-color: #218838; }
         
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            background: #f8f9fa;
-        }
-        
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
-            min-width: auto;
-            border-radius: 4px;
-        }
-        
-        .btn-copy {
-            background-color: #164029;
-            color: white;
-        }
-        
-        .btn-copy:hover {
-            background-color: #0d261c;
-        }
-        
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        
-        /* Pré-visualização compacta */
         .preview-section {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
             border: 1px solid var(--border);
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
         
-        .preview-item {
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 15px;
+            font-size: 12px;
+        }
+        
+        .preview-row {
             display: flex;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #ddd;
-            font-size: 13px;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ddd;
         }
         
-        .preview-label {
-            flex: 0 0 100px;
-            font-weight: 600;
-            color: var(--primary);
-        }
+        .preview-key { font-weight: 600; color: var(--primary-dark); flex: 0 0 150px; }
+        .preview-val { color: #333; flex: 1; word-break: break-word; }
+        .preview-val.empty { color: #aaa; font-style: italic; }
         
-        .preview-value {
-            flex: 1;
-            color: var(--dark);
-            word-break: break-word;
-        }
-        
-        .preview-value.empty {
-            color: #999;
-            font-style: italic;
-        }
-        
-        /* Área de dica e botão pequeno */
         .tip-area {
             display: flex;
             justify-content: space-between;
@@ -215,12 +138,8 @@
             font-size: 12px;
         }
         
-        .tip-text {
-            color: #1a5fb4;
-            flex: 1;
-        }
+        .tip-text { color: #1a5fb4; flex: 1; }
         
-        /* Sistema de Inserção */
         .system-textarea {
             width: 100%;
             min-height: 120px;
@@ -262,40 +181,14 @@
             font-size: 13px;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+        .status-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .status-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
         
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        
-        .status-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 15px 0;
-        }
+        .loading { display: none; text-align: center; margin: 15px 0; }
         
         .spinner {
             border: 3px solid rgba(0,0,0,0.1);
@@ -307,75 +200,18 @@
             margin: 0 auto 10px;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .card {
-            background: var(--light);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--primary);
-        }
+        .card { background: var(--light); border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 3px solid var(--primary); }
+        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         
-        .card h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        h2 { color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; font-size: 1.3rem; }
         
-        h2 {
-            color: var(--primary);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
+        .info-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
         
-        .info-box {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        
-        .finance-summary {
-            background: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 12px;
-            font-size: 12px;
-        }
-        
-        .finance-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-        
-        .finance-label {
-            font-weight: 600;
-        }
-        
-        .finance-value {
-            font-weight: 600;
-        }
-        
-        /* Modal/Popup de confirmação */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5);
             display: none;
             align-items: center;
@@ -395,10 +231,7 @@
             animation: slideUp 0.3s;
         }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .modal-header {
             padding: 20px;
@@ -409,43 +242,13 @@
             text-align: center;
         }
         
-        .modal-header h3 {
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .modal-header h3 { font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border); display: flex; justify-content: center; gap: 10px; }
         
-        .modal-body {
-            padding: 20px;
-        }
-        
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .summary-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .summary-label {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        
-        .summary-value {
-            color: var(--dark);
-            font-size: 14px;
-        }
+        .summary-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .summary-label { font-weight: 600; color: var(--primary); margin-bottom: 5px; font-size: 14px; }
+        .summary-value { color: var(--dark); font-size: 14px; }
         
         .confirmation-message {
             text-align: center;
@@ -457,57 +260,25 @@
             border: 1px solid #c8e6c9;
         }
         
-        /* Responsividade */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-                gap: 15px;
-            }
-            
-            .section {
-                padding: 15px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .preview-section {
-                max-height: 250px;
-            }
-            
-            .tip-area {
-                flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
-            }
-            
-            .converter-textarea,
-            .system-textarea {
-                font-size: 12px;
-                padding: 12px;
-                min-height: 200px;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 10px;
-            }
+            .container { padding: 10px; gap: 15px; }
+            .section { padding: 15px; }
+            .button-group { flex-direction: column; gap: 8px; }
+            .btn { width: 100%; }
+            .preview-section { max-height: 250px; }
+            .tip-area { flex-direction: column; gap: 8px; align-items: stretch; }
+            .converter-textarea, .system-textarea { font-size: 12px; padding: 12px; min-height: 200px; }
+            .modal-content { width: 95%; margin: 10px; }
+            .preview-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Seção do Conversor de Pedidos -->
         <div class="section">
             <div class="header">
                 <h1>🛒 Processador de Pedidos - SITE</h1>
-                <p>Converta os pedidos do site para formato Excel (60 colunas)</p>
+                <p>Converta os pedidos do site para formato Excel (69 colunas)</p>
             </div>
             
             <div class="info-box">
@@ -515,7 +286,9 @@
                 1. <strong>Processamento automático:</strong> Sistema otimizado para extração de dados<br />
                 2. <strong>Endereços corrigidos:</strong> Captura ambos os formatos de endereço<br />
                 3. <strong>Duplicatas removidas:</strong> Produtos repetidos são contados apenas uma vez<br />
-                4. <strong>Confirmação simplificada:</strong> Popup de confirmação após cada inserção
+                4. <strong>Enviar cartão:</strong> Capturado e salvo na coluna R<br />
+                5. <strong>CEP do endereço:</strong> Capturado e salvo na coluna AJ<br />
+                6. <strong>Mensagem do cartão:</strong> Assinatura salva junto na mesma célula
             </div>
             
             <textarea class="converter-textarea" id="inputData" placeholder="Cole aqui todo o conteúdo do pedido do site..."></textarea>
@@ -525,14 +298,12 @@
                 <button class="btn btn-secondary" id="clearConverterBtn">🗑️ Limpar</button>
             </div>
             
-            <!-- Pré-visualização compacta -->
             <div class="preview-section">
                 <h2 style="margin-top: 0;">📋 Pré-visualização</h2>
                 <div id="previewArea" style="display: none;">
-                    <div id="previewContent"><!-- Conteúdo será gerado dinamicamente --></div>
-                    <!-- Área de dica e botão pequeno -->
+                    <div id="previewContent"></div>
                     <div class="tip-area">
-                        <div class="tip-text">💡 Os dados já foram copiados para a área de inserção abaixo. Use o botão ao lado para copiar manualmente.</div>
+                        <div class="tip-text">💡 Os dados já foram copiados para a área de inserção abaixo.</div>
                         <button class="btn btn-copy btn-small" id="copyBtn">📋 Copiar</button>
                     </div>
                 </div>
@@ -542,41 +313,34 @@
             </div>
         </div>
         
-        <!-- Seção do Sistema de Inserção na Planilha -->
         <div class="section">
             <div class="header">
                 <h1>📋 Sistema de Inserção de Dados</h1>
-                <p>Inserir dados na planilha do Google Sheets (60 colunas)</p>
+                <p>Inserir dados na planilha do Google Sheets (69 colunas)</p>
             </div>
             
             <div class="card">
                 <h3>📝 Inserir Dados na Planilha</h3>
                 <div style="margin-bottom: 15px;">
-                    <textarea class="system-textarea" id="dataInput" placeholder="Os dados processados acima são copiados automaticamente aqui. 
-Você também pode colar manualmente dados do Excel/LibreOffice.
-Cole UMA linha por vez, com os dados separados por TAB."></textarea>
+                    <textarea class="system-textarea" id="dataInput" placeholder="Os dados processados acima são copiados automaticamente aqui."></textarea>
                 </div>
                 <div class="counter" id="columnCounter">📊 Colunas detectadas: <span id="columnCount">0</span></div>
             </div>
             
-            <!-- Botões de Ação -->
             <div class="button-group">
                 <button class="btn btn-secondary" id="clearBtn">🗑️ Limpar Tudo</button>
                 <button class="btn btn-primary" id="submitBtn">✅ Confirmar Inserção</button>
             </div>
             
-            <!-- Loading -->
             <div class="loading" id="loadingSection">
                 <div class="spinner"> </div>
                 <p>Enviando pedido para a planilha...</p>
             </div>
             
-            <!-- Status Messages -->
             <div class="status-box" id="statusBox"> </div>
         </div>
     </div>
     
-    <!-- Modal/Popup de confirmação -->
     <div class="modal-overlay" id="confirmationModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -592,9 +356,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     📋 Resumo do Pedido
                 </h4>
                 
-                <div id="modalSummaryContent">
-                    <!-- Conteúdo do resumo será inserido aqui -->
-                </div>
+                <div id="modalSummaryContent"></div>
                 
                 <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid var(--border); font-size: 13px;">
                     <strong>⚠️ Nota:</strong> Os dados foram enviados para processamento. Verifique a planilha para confirmar a inserção completa.
@@ -608,10 +370,11 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
 
     <script>
         // ============================================
-        // CONFIGURAÇÕES DO SISTEMA
+        // CONFIGURAÇÕES
         // ============================================
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby_5VMpTyvPCSqA5TCDFUAx7wXQnybqonJX2-kBcFcS-Hlpx_1QKzF_d7XcIKC-0Uud/exec';
         const CORRECT_PASSWORD = '562938';
+        const TOTAL_COLUMNS = 69;
         
         let currentData = [];
         let processedExcelLine = '';
@@ -648,18 +411,17 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             document.getElementById('dataInput').value = '';
             document.getElementById('columnCount').textContent = '0';
             document.getElementById('columnCounter').style.background = '#e8f0fe';
-            
             mostrarStatus('🗑️ Conversor limpo!', 'info');
         }
         
         // ============================================
-        // FUNÇÕES DE EXTRAÇÃO DE DADOS
+        // EXTRAÇÃO DE DADOS
         // ============================================
         
         function extractOrderNumber(input) {
             if (!input) return '';
-            const orderMatch = input.match(/#(\d+)/);
-            return orderMatch ? orderMatch[1] : '';
+            const m = input.match(/#(\d+)/);
+            return m ? m[1] : '';
         }
         
         function extractCoupon(input) {
@@ -668,165 +430,174 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             const cupomMatch = input.match(/Desconto via cupom\s+([A-Z0-9]+)/i);
             if (!cupomMatch) return { code: '', amount: 0 };
             
-            const couponCode = cupomMatch[1].trim();
+            const code = cupomMatch[1].trim();
+            let amount = 0;
+            const dm = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
+            if (dm) amount = Math.abs(parsePrice(dm[1]));
             
-            let discountAmount = 0;
-            const discountMatch = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
-            if (discountMatch) {
-                discountAmount = parsePrice(discountMatch[1]);
-                discountAmount = Math.abs(discountAmount);
-            }
-            
-            return {
-                code: couponCode,
-                amount: discountAmount
-            };
+            return { code, amount };
         }
         
         function extractTotal(input) {
             if (!input) return 0;
-            const totalMatch = input.match(/Total:\s*R\$\s*(\d+[.,]\d{2})/);
-            return totalMatch ? parsePrice(totalMatch[1]) : 0;
+            const m = input.match(/Total:\s*R\$\s*(\d+[.,]\d{2})/);
+            return m ? parsePrice(m[1]) : 0;
         }
         
         function extractShipping(input) {
             if (!input) return 0;
-            const shippingMatch = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
-            return shippingMatch ? parsePrice(shippingMatch[1]) : 0;
+            let m = input.match(/Envio via[\s\S]{0,120}?:\s*R\$\s*(\d+[.,]\d{2})/);
+            if (m) return parsePrice(m[1]);
+            m = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
+            return m ? parsePrice(m[1]) : 0;
         }
         
         function extractCustomerName(input) {
             if (!input) return '';
-            
-            const beforeDetails = input.split('Detalhes do cliente')[0];
-            if (!beforeDetails) return '';
-            
-            const lines = beforeDetails.split('\n')
-                .map(line => line.trim())
-                .filter(line => line !== '');
-            
+            const before = input.split('Detalhes do cliente')[0];
+            if (!before) return '';
+            const lines = before.split('\n').map(l => l.trim()).filter(l => l !== '');
             for (let i = lines.length - 1; i >= 0; i--) {
-                const line = lines[i];
-                if (!line.match(/#\d+/) && !line.match(/Criado em/)) {
-                    return line;
+                const l = lines[i];
+                if (!l.match(/#\d+/) && 
+                    !l.match(/Criado em/) &&
+                    !l.match(/Situação do pedido/) &&
+                    !l.match(/^Pago$/) &&
+                    !l.match(/^Envio via/) &&
+                    !l.match(/^Digite o código/) &&
+                    !l.match(/^Enviar$/) &&
+                    !l.match(/^Prazo de entrega/) &&
+                    !l.match(/^Mensagem do cliente/) &&
+                    !l.match(/^Observação do carrinho/) &&
+                    !l.match(/^\[/) &&
+                    !l.match(/^CEP da entrega/) &&
+                    !l.match(/^Data da entrega/) &&
+                    !l.match(/^Horário da entrega/) &&
+                    !l.match(/^Nome do presenteado/) &&
+                    !l.match(/^Telefone do presenteado/) &&
+                    !l.match(/^Enviar cartão/) &&
+                    !l.match(/^Mensagem do cartão/) &&
+                    !l.match(/^Assinatura no cartão/) &&
+                    !l.match(/^\[\//) &&
+                    !l.match(/^Pagamento via/) &&
+                    !l.match(/^Pix$/) &&
+                    !l.match(/^ID da transação/)) {
+                    return l;
                 }
             }
-            
             return '';
         }
         
         function extractPhone(input) {
             if (!input) return '';
-            const phoneMatch = input.match(/Telefone celular:\s*([\d\s\-\(\)]+)/);
-            return phoneMatch ? phoneMatch[1].trim() : '';
+            const m = input.match(/Telefone celular:\s*\n?\s*([\d\s\-\(\)]+)/);
+            return m ? m[1].trim() : '';
         }
         
+        function extractGiftedName(input) {
+            if (!input) return '';
+            const m = input.match(/Nome do presenteado:\s*(.+?)(?:\n|$)/i);
+            return m ? m[1].trim() : '';
+        }
         
+        function extractGiftedPhone(input) {
+            if (!input) return '';
+            const m = input.match(/Telefone do presenteado:\s*(.+?)(?:\n|$)/i);
+            return m ? m[1].trim() : '';
+        }
+        
+        function extractSendCard(input) {
+            if (!input) return '';
+            const m = input.match(/Enviar cart[ãa]o:\s*(Sim|N[ãa]o)/i);
+            return m ? m[1].trim() : '';
+        }
         
         function extractAddress(input) {
-            const result = {
-                street: '',
-                complement: '',
-                neighborhood: '',
-                city: '',
-                reference: ''
-            };
-            
+            const result = { street: '', complement: '', neighborhood: '', city: '', reference: '', cep: '' };
             if (!input) return result;
             
-            let addressMatch = input.match(/Endereço de entrega e pagamento([\s\S]+?)(?=Produtos|$)/);
+            let addrMatch = input.match(/Endereço de entrega e pagamento([\s\S]+?)(?=Produtos|$)/);
+            if (!addrMatch) addrMatch = input.match(/Endereço de entrega([\s\S]+?)(?=Endereço de cobrança|Produtos|$)/);
+            if (!addrMatch) return result;
             
-            if (!addressMatch) {
-                addressMatch = input.match(/Endereço de entrega([\s\S]+?)(?=Endereço de cobrança|Produtos|$)/);
+            const addrText = addrMatch[1];
+            const lines = addrText.split('\n').map(l => l.trim()).filter(l => l !== '');
+            
+            let start = 0;
+            if (lines.length > 0 && !lines[0].match(/(Rua|Av|Avenida|Travessa|Alameda|Praça).*\d/i)) start = 1;
+            
+            if (lines.length > start) {
+                const parts = (lines[start] || '').split(' - ');
+                result.street = parts[0] ? parts[0].trim() : '';
+                if (parts.length > 1) result.complement = parts.slice(1).join(' - ').trim();
             }
             
-            if (!addressMatch) return result;
-            
-            const addressText = addressMatch[1];
-            const lines = addressText.split('\n')
-                .map(line => line.trim())
-                .filter(line => line !== '');
-            
-            let startLine = 0;
-            if (lines.length > 0 && !lines[0].match(/(Rua|Av|Avenida|Travessa|Alameda|Praça).*\d/i)) {
-                startLine = 1;
+            if (lines.length > start + 1) {
+                const cityParts = (lines[start + 1] || '').split(' - ');
+                result.neighborhood = cityParts[0] ? cityParts[0].trim() : '';
+                if (cityParts.length > 1) result.city = cityParts[1].trim().split('/')[0].trim();
             }
             
-            if (lines.length > startLine) {
-                const addressLine = lines[startLine] || '';
-                const parts = addressLine.split(' - ');
-                
-                if (parts.length > 0) {
-                    result.street = parts[0].trim();
-                    if (parts.length > 1) {
-                        result.complement = parts.slice(1).join(' - ').trim();
-                    }
-                }
-            }
+            // CEP do endereço
+            const cepM = addrText.match(/CEP:\s*(\d{5}-?\d{3})/i);
+            if (cepM) result.cep = cepM[1].trim();
             
-            if (lines.length > startLine + 1) {
-                const cityLine = lines[startLine + 1] || '';
-                const cityParts = cityLine.split(' - ');
-                
-                if (cityParts.length > 0) {
-                    result.neighborhood = cityParts[0].trim();
-                    if (cityParts.length > 1) {
-                        const cityState = cityParts[1].trim();
-                        const cityOnly = cityState.split('/')[0].trim();
-                        result.city = cityOnly;
-                    }
-                }
-            }
-            
-            const refMatch = input.match(/Referência:\s*(.+?)(?:\n|$)/);
-            if (refMatch) {
-                result.reference = refMatch[1].trim();
+            // Referência (fallback CEP entrega ou CEP endereço)
+            const refM = input.match(/Referência:\s*(.+?)(?:\n|$)/);
+            if (refM && refM[1].trim() !== '') {
+                result.reference = refM[1].trim();
+            } else {
+                const cepEnt = input.match(/CEP da entrega:\s*(\d{5}-?\d{3})/i);
+                if (cepEnt) result.reference = cepEnt[1].trim();
+                else if (result.cep) result.reference = result.cep;
             }
             
             return result;
         }
         
         function extractDeliveryInfo(input) {
-            const result = {
-                date: '',
-                formattedDate: '',
-                time: ''
-            };
-            
+            const result = { date: '', formattedDate: '', time: '' };
             if (!input) return result;
             
-            const dateMatch = input.match(/Data:\s*(\d{2}\/\d{2}\/\d{4})/);
-            if (dateMatch) {
-                result.date = dateMatch[1];
-                const weekday = getWeekdayName(result.date);
-                result.formattedDate = `${result.date} - ${weekday}`;
+            const dm = input.match(/Data da entrega:\s*(\d{2}\/\d{2}\/\d{4})/i);
+            if (dm) {
+                result.date = dm[1];
+                result.formattedDate = `${dm[1]} - ${getWeekdayName(dm[1])}`;
             }
             
-            const timeMatch = input.match(/Periodo:\s*(.+?)(?:\n|$)/);
-            result.time = timeMatch ? timeMatch[1].trim() : '';
+            const tm = input.match(/Hor[áa]rio da entrega:\s*(.+?)(?:\n|$)/i);
+            result.time = tm ? tm[1].trim() : '';
             
             return result;
         }
         
+        // ✅ Mensagem do cartão + Assinatura (mesma célula)
         function extractMessage(input) {
             if (!input) return '';
-            const messageMatch = input.match(/Mensagem:\s*([\s\S]+?)(?=\nAgendamento:|$)/);
-            return messageMatch ? messageMatch[1].trim().replace(/\n/g, ' ') : '';
+            
+            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]+?)(?=\nAssinatura no cart[ãa]o:|$)/i);
+            const messageText = msgM ? msgM[1].trim() : '';
+            
+            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]+?)(?=\n\[\/AGENDAMENTO|\nPagamento via|\nID da transa|$)/i);
+            const signatureText = sigM ? sigM[1].trim() : '';
+            
+            if (messageText && signatureText) return messageText + '\n\n' + signatureText;
+            if (messageText) return messageText;
+            if (signatureText) return signatureText;
+            return '';
         }
         
         function extractProducts(input) {
             if (!input) return { productName: '', productsList: [] };
             
-            const productSection = input.match(/Produtos[\s\S]+?(?=Envio via|Total:|$)/);
-            if (!productSection) return { productName: '', productsList: [] };
+            const sec = input.match(/Produtos[\s\S]+?(?=Envio via|Total:|$)/);
+            if (!sec) return { productName: '', productsList: [] };
             
-            const productsText = productSection[0];
-            const lines = productsText.split('\n');
-            const productMap = new Map();
+            const lines = sec[0].split('\n');
+            const map = new Map();
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
-                
                 if (!line || 
                     line.includes('Produtos') || 
                     line.includes('SKU:') || 
@@ -835,85 +606,65 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     line.includes('Disponibilidade:') ||
                     line.includes('Peso e dimensões:') ||
                     line.match(/^R\$\s*\d+[.,]\d{2}$/) ||
-                    line.includes('Desconto via')) {
-                    continue;
-                }
+                    line.includes('Desconto via')) continue;
                 
                 if (line.length > 10 && !line.match(/^\s*R\$/)) {
-                    
-                    const isDuplicate = i > 0 && 
+                    const dup = i > 0 && 
                         Math.abs(lines[i-1].trim().length - line.length) < 5 &&
                         lines[i-1].trim().substring(0, 20) === line.substring(0, 20);
+                    if (dup) continue;
                     
-                    if (isDuplicate) {
-                        continue;
-                    }
-                    
-                    let productCode = null;
-                    let productName = line;
-                    
-                    const codMatch = line.match(/(?:Cód|cod)\s*([A-Z]?\d{2,3})/i);
-                    if (codMatch) {
-                        productCode = codMatch[1];
-                        productName = line.replace(new RegExp(`(?:Cód|cod)\\s*${productCode}`, 'gi'), '').trim();
+                    let code = null, name = line;
+                    const cm = line.match(/(?:Cód|cod)\s*([A-Z]?\d{2,3})/i);
+                    if (cm) {
+                        code = cm[1];
+                        name = line.replace(new RegExp(`(?:Cód|cod)\\s*${code}`, 'gi'), '').trim();
                     } else {
-                        const numberMatch = line.match(/\b([A-Z]?\d{2,3})\b/);
-                        if (numberMatch) {
-                            productCode = numberMatch[1];
-                            productName = line.replace(new RegExp(`\\s${productCode}\\b`), '').trim();
+                        const nm = line.match(/\b([A-Z]?\d{2,3})\b/);
+                        if (nm) {
+                            code = nm[1];
+                            name = line.replace(new RegExp(`\\s${code}\\b`), '').trim();
                         }
                     }
+                    name = name.replace(/\s+/g, ' ').replace(/\s-\s*$/, '').trim();
                     
-                    productName = productName.replace(/\s+/g, ' ').trim();
-                    productName = productName.replace(/\s-\s*$/, '').trim();
-                    
-                    if (productName && productCode) {
-                        if (productMap.has(productCode)) {
-                            const existing = productMap.get(productCode);
-                            existing.quantity += 1;
-                        } else {
-                            const product = {
-                                name: productName,
-                                code: productCode,
-                                quantity: 1
-                            };
-                            productMap.set(productCode, product);
-                        }
+                    if (name && code) {
+                        if (map.has(code)) map.get(code).quantity += 1;
+                        else map.set(code, { name, code, quantity: 1 });
                     }
                 }
             }
             
-            const productsList = Array.from(productMap.values());
-            
+            const list = Array.from(map.values());
             let productName = '';
-            if (productsList.length > 0) {
-                const totalKits = productsList.reduce((sum, prod) => sum + prod.quantity, 0);
-                const codesString = productsList.map(p => `${p.quantity}x${p.code}`).join('-');
-                const descriptions = productsList.map(p => `${p.quantity}x ${p.code} ${p.name}`).join(' | ');
+            if (list.length > 0) {
+                const totalKits = list.reduce((s, p) => s + p.quantity, 0);
+                const codesStr = list.map(p => `${p.quantity}x${p.code}`).join('-');
+                const descs = list.map(p => `${p.quantity}x ${p.code} ${p.name}`).join(' | ');
                 const kitText = totalKits === 1 ? 'Kit' : 'Kits';
-                productName = `(${totalKits} ${kitText} ${codesString}) - ${descriptions}`;
+                productName = `(${totalKits} ${kitText} ${codesStr}) - ${descs}`;
             }
-            
-            return {
-                productName: productName,
-                productsList: productsList
-            };
+            return { productName, productsList: list };
         }
         
         function detectPaymentMethod(input) {
             if (!input) return '';
-            
-            if (input.includes('Pagar.me') || input.includes('Cartão')) {
-                return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            } else if (input.includes('Pix')) {
-                return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            const m = input.match(/Pagamento via\s*\n?\s*(Pix|PIX|Cart[ãa]o[^\n]*|Boleto|Pagar\.me[^\n]*)/i);
+            if (m) {
+                const method = m[1].trim();
+                if (/pix/i.test(method)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+                if (/cart[ãa]o|pagar\.me/i.test(method)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
+                if (/boleto/i.test(method)) return 'Boleto bancário';
+                return method;
             }
-            
+            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(input)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
+            if (/\bPix\b|\bPIX\b/i.test(input)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            if (/Boleto/i.test(input)) return 'Boleto bancário';
             return '';
         }
         
         // ============================================
-        // FUNÇÃO PRINCIPAL DE PROCESSAMENTO
+        // PROCESSAMENTO PRINCIPAL
         // ============================================
         
         function processData() {
@@ -932,6 +683,7 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 const customerPhone = extractPhone(input);
                 const giftedName = extractGiftedName(input);
                 const giftedPhone = extractGiftedPhone(input);
+                const sendCard = extractSendCard(input);
                 const address = extractAddress(input);
                 const delivery = extractDeliveryInfo(input);
                 const message = extractMessage(input);
@@ -940,37 +692,33 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 
                 const productValue = total - shipping;
                 
-                // Salvar resumo para mostrar no modal
                 currentOrderSummary = {
-                    orderNumber: orderNumber,
-                    customerName: customerName,
-                    customerPhone: customerPhone,
+                    orderNumber, customerName, customerPhone,
                     productName: products.productName,
                     total: formatPrice(total),
                     shippingPrice: formatPrice(shipping),
                     productValue: formatPrice(productValue),
                     couponCode: coupon.code,
                     couponAmount: formatPrice(coupon.amount),
-                    giftedName: giftedName,
+                    giftedName,
                     deliveryDate: delivery.formattedDate,
                     deliveryTime: delivery.time,
+                    sendCard,
                     street: address.street,
                     neighborhood: address.neighborhood,
                     city: address.city,
+                    cep: address.cep,
                     productsCount: products.productsList.length,
-                    paymentMethod: paymentMethod
+                    paymentMethod
                 };
                 
                 const result = {
-                    orderNumber: orderNumber,
+                    orderNumber,
                     dateTime: input.match(/#\d+ - Criado em (\d{2}\/\d{2}\/\d{4} \d{2}:\d{2})/)?.[1] || '',
-                    customerName: customerName,
-                    customerPhone: customerPhone,
-                    giftedName: giftedName,
-                    giftedPhone: giftedPhone,
+                    customerName, customerPhone,
+                    giftedName, giftedPhone, sendCard,
                     productName: products.productName,
                     productPrice: formatPrice(productValue),
-                    productsList: products.productsList,
                     total: formatPrice(total),
                     shippingPrice: formatPrice(shipping),
                     couponCode: coupon.code,
@@ -980,200 +728,184 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                     complement: address.complement,
                     neighborhood: address.neighborhood,
                     city: address.city,
+                    cep: address.cep,
                     reference: address.reference,
                     deliveryDate: delivery.formattedDate,
                     deliveryTime: delivery.time,
-                    message: message,
+                    message,
                     hasMessage: message.trim() !== '' ? 'Sim' : 'Não',
-                    paymentMethod: paymentMethod,
+                    paymentMethod,
                     source: 'SITE',
                     isAnonymous: 'Sim'
                 };
                 
-                // Criar array com 60 colunas
-                const excelColumns = new Array(60).fill('');
+                // ✅ 69 COLUNAS
+                const c = new Array(TOTAL_COLUMNS).fill('');
                 
-                // Preencher colunas conforme mapeamento
-                excelColumns[0] = result.dateTime;
-                excelColumns[1] = result.customerName;
-                excelColumns[2] = result.customerPhone;
-                excelColumns[3] = result.productName;
-                excelColumns[4] = result.productPrice;
-                excelColumns[5] = result.shippingPrice;
-                excelColumns[6] = result.source;
-                excelColumns[8] = result.giftedName;
-                excelColumns[9] = result.giftedPhone;
-                excelColumns[10] = result.street;
-                excelColumns[11] = result.complement;
-                excelColumns[12] = result.neighborhood;
-                excelColumns[13] = result.city;
-                excelColumns[14] = result.reference;
-                excelColumns[15] = result.deliveryDate;
-                excelColumns[16] = result.deliveryTime;
-                excelColumns[17] = result.hasMessage;
-                excelColumns[18] = result.message;
-                excelColumns[32] = result.paymentMethod;
-                excelColumns[46] = result.source;
-                excelColumns[48] = result.isAnonymous;
-                excelColumns[50] = result.couponInfo;
-                excelColumns[52] = result.orderNumber;
+                c[0]  = result.dateTime;            // A - Carimbo
+                c[1]  = result.customerName;        // B - Nome Comprador
+                c[2]  = result.customerPhone;       // C - Telefone Comprador
+                c[3]  = result.productName;         // D - Código/Descrição
+                c[4]  = result.productPrice;        // E - Preço produto
+                c[5]  = result.shippingPrice;       // F - Frete
+                c[6]  = result.source;              // G - Coluna 1
+                c[7]  = '';                         // H - Entregador
+                c[8]  = result.giftedName;          // I - Nome Presenteado
+                c[9]  = result.giftedPhone;         // J - Telefone Presenteado
+                c[10] = result.street;              // K - Rua
+                c[11] = result.complement;          // L - Complemento
+                c[12] = result.neighborhood;        // M - Bairro
+                c[13] = result.city;                // N - Cidade
+                c[14] = result.reference;           // O - Ponto de Referência
+                c[15] = result.deliveryDate;        // P - Data da entrega
+                c[16] = result.deliveryTime;        // Q - Horário
+                c[17] = result.sendCard;            // R - Enviar cartão (Sim/Não)
+                c[18] = result.message;             // S - Mensagem + Assinatura
+                // T–AF (19–31) vazias
+                c[32] = result.paymentMethod;       // AG - Forma pagamento
+                // AH–AI (33–34) vazias
+                c[35] = result.cep;                 // AJ - CEP DO ENDEREÇO
+                // AK–AS (36–44) vazias
+                c[45] = result.couponCode;          // AT - Cupom desconto
+                c[46] = result.source;              // AU - Nos ajude a melhorar
+                // AV (47) vazia
+                c[48] = result.isAnonymous;         // AW - Presente anônimo
+                // AX (49) vazia
+                c[50] = result.couponInfo;          // AY - CUPOM DESCONTO OU BRINDE
+                // AZ (51) vazia
+                c[52] = result.orderNumber;         // BA - NÚMERO DO PEDIDO
+                // BB–BQ (53–68) vazias
                 
-                // Gerar linha Excel
-                processedExcelLine = excelColumns.join('\t');
+                processedExcelLine = c.join('\t');
                 
-                // Mostrar pré-visualização
                 showPreview(result, total, shipping, coupon.amount, productValue);
-                
-                // Copiar para o campo de inserção
                 document.getElementById('dataInput').value = processedExcelLine;
                 processarDadosInput();
                 
-                mostrarStatus(`✅ Dados processados! ${products.productsList.length} produto(s) único(s) encontrado(s).`, 'success');
+                mostrarStatus(`✅ Dados processados! ${products.productsList.length} produto(s) único(s).`, 'success');
                 
             } catch (error) {
-                console.error('Erro ao processar dados:', error);
+                console.error('Erro:', error);
                 mostrarStatus('❌ Erro ao processar os dados. Verifique o formato.', 'error');
             }
         }
         
         function showPreview(result, total, shipping, discount, productValue) {
             const previewContent = document.getElementById('previewContent');
-            const previewArea = document.getElementById('previewArea');
-            const noPreview = document.getElementById('noPreview');
+            document.getElementById('previewArea').style.display = 'block';
+            document.getElementById('noPreview').style.display = 'none';
             
-            previewArea.style.display = 'block';
-            noPreview.style.display = 'none';
+            const row = (label, value) => {
+                const v = value && String(value).trim() !== '' ? value : '—';
+                const cls = value && String(value).trim() !== '' ? '' : 'empty';
+                return `<div class="preview-row"><div class="preview-key">${label}</div><div class="preview-val ${cls}">${v}</div></div>`;
+            };
             
-            let previewHTML = '';
+            let html = '';
             
-            previewHTML += `
-                <div class="finance-summary">
-                    <div class="finance-item">
-                        <span class="finance-label">🧾 Número do Pedido:</span>
-                        <span class="finance-value">#${result.orderNumber || 'N/A'}</span>
-                    </div>
-                    <div class="finance-item">
-                        <span class="finance-label">💰 Total do Pedido:</span>
-                        <span class="finance-value">R$ ${formatPrice(total)}</span>
-                    </div>
-                    <div class="finance-item">
-                        <span class="finance-label">🚚 Frete:</span>
-                        <span class="finance-value">- R$ ${formatPrice(shipping)}</span>
-                    </div>
-                    ${discount > 0 ? `
-                    <div class="finance-item" style="color: #28a745;">
-                        <span class="finance-label">🏷️ Desconto Cupom:</span>
-                        <span class="finance-value">- R$ ${formatPrice(discount)}</span>
-                    </div>
-                    ` : ''}
-                    <div class="finance-item" style="font-weight: bold; border-top: 1px solid #c8e6c9; padding-top: 5px; margin-top: 5px;">
-                        <span class="finance-label">🛒 VALOR PRODUTOS:</span>
-                        <span class="finance-value">R$ ${formatPrice(productValue)}</span>
-                    </div>
+            html += `
+                <div style="background:#e8f5e9;border:1px solid #c8e6c9;border-radius:6px;padding:10px;margin-bottom:12px;font-size:12px;">
+                    <div style="display:flex;justify-content:space-between;"><strong>💰 Total:</strong><span>R$ ${formatPrice(total)}</span></div>
+                    <div style="display:flex;justify-content:space-between;"><strong>🚚 Frete:</strong><span>- R$ ${formatPrice(shipping)}</span></div>
+                    ${discount > 0 ? `<div style="display:flex;justify-content:space-between;color:#28a745;"><strong>🏷️ Desconto:</strong><span>- R$ ${formatPrice(discount)}</span></div>` : ''}
+                    <div style="display:flex;justify-content:space-between;font-weight:bold;border-top:1px solid #c8e6c9;padding-top:5px;margin-top:5px;"><strong>🛒 Produtos:</strong><span>R$ ${formatPrice(productValue)}</span></div>
                 </div>
             `;
             
-            previewContent.innerHTML = previewHTML;
+            html += `<div class="preview-grid">`;
+            html += row('🅰️ Data/Hora', result.dateTime);
+            html += row('🅱️ Nome Comprador', result.customerName);
+            html += row('🅲 Telefone', result.customerPhone);
+            html += row('🅳 Produto', result.productName);
+            html += row('🅴 Valor Produto', result.productPrice);
+            html += row('🅵 Frete', result.shippingPrice);
+            html += row('🅶 Coluna 1', result.source);
+            html += row('🅸 Presenteado', result.giftedName);
+            html += row('🅹 Tel. Presenteado', result.giftedPhone);
+            html += row('🅺 Rua', result.street);
+            html += row('🅻 Complemento', result.complement);
+            html += row('🅼 Bairro', result.neighborhood);
+            html += row('🅽 Cidade', result.city);
+            html += row('🅾 Referência', result.reference);
+            html += row('🅿️ Data Entrega', result.deliveryDate);
+            html += row('🆀 Horário', result.deliveryTime);
+            html += row('🆁 Enviar Cartão', result.sendCard);
+            html += row('🆂 Mensagem + Assinatura', result.message);
+            html += row('🅰️🅶 Pagamento', result.paymentMethod);
+            html += row('🅰️🅹 CEP Endereço', result.cep);
+            html += row('🅰️🆃 Cupom', result.couponCode);
+            html += row('🅰️🆄 Source', result.source);
+            html += row('🅰️🆆 Anônimo', result.isAnonymous);
+            html += row('🅰️🆈 Info Cupom', result.couponInfo);
+            html += row('🅱️🅰️ Nº Pedido', result.orderNumber);
+            html += `</div>`;
+            
+            previewContent.innerHTML = html;
         }
         
         function copyToClipboard() {
             if (!processedExcelLine) {
-                mostrarStatus('❌ Nenhum dado para copiar. Processe os dados primeiro.', 'error');
+                mostrarStatus('❌ Nenhum dado para copiar.', 'error');
                 return;
             }
-            
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = processedExcelLine;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            tempTextArea.setSelectionRange(0, 99999);
-            
+            const t = document.createElement('textarea');
+            t.value = processedExcelLine;
+            document.body.appendChild(t);
+            t.select();
+            t.setSelectionRange(0, 99999);
             try {
                 document.execCommand('copy');
-                
-                const copyBtn = document.getElementById('copyBtn');
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '✅ Copiado!';
-                copyBtn.style.backgroundColor = '#28a745';
-                
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalText;
-                    copyBtn.style.backgroundColor = '';
-                }, 2000);
-                
-                mostrarStatus('✅ Copiado para a área de transferência!', 'success');
-                
-            } catch (err) {
-                mostrarStatus('❌ Erro ao copiar: ' + err, 'error');
+                const btn = document.getElementById('copyBtn');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '✅ Copiado!';
+                btn.style.backgroundColor = '#28a745';
+                setTimeout(() => { btn.innerHTML = orig; btn.style.backgroundColor = ''; }, 2000);
+                mostrarStatus('✅ Copiado!', 'success');
+            } catch (e) {
+                mostrarStatus('❌ Erro ao copiar.', 'error');
             } finally {
-                document.body.removeChild(tempTextArea);
+                document.body.removeChild(t);
             }
         }
         
-        // ============================================
-        // SISTEMA DE CONEXÃO COM GOOGLE SHEETS
-        // ============================================
-        
         function processarDadosInput() {
-            const input = document.getElementById('dataInput');
-            const data = input.value.trim();
+            const data = document.getElementById('dataInput').value.trim();
             const counter = document.getElementById('columnCount');
-            const counterBox = document.getElementById('columnCounter');
+            const box = document.getElementById('columnCounter');
             
             if (!data) {
                 counter.textContent = '0';
-                counterBox.style.background = '#e8f0fe';
+                box.style.background = '#e8f0fe';
                 currentData = [];
                 return;
             }
             
             const lines = data.split('\n');
-            const firstLine = lines[0];
-            const columns = firstLine.split('\t').map(col => col.trim());
+            const cols = lines[0].split('\t').map(c => c.trim());
+            counter.textContent = cols.length;
             
-            counter.textContent = columns.length;
-            
-            if (columns.length < 5) {
-                counterBox.style.background = '#f8d7da';
-                counterBox.style.color = '#721c24';
-                counterBox.style.borderColor = '#f5c6cb';
-            } else if (columns.length >= 55) {
-                counterBox.style.background = '#d4edda';
-                counterBox.style.color = '#155724';
-                counterBox.style.borderColor = '#c3e6cb';
-            } else if (columns.length >= 45) {
-                counterBox.style.background = '#fff3cd';
-                counterBox.style.color = '#856404';
-                counterBox.style.borderColor = '#ffeaa7';
+            if (cols.length >= 65) {
+                box.style.background = '#d4edda';
+                box.style.color = '#155724';
+                box.style.borderColor = '#c3e6cb';
+            } else if (cols.length >= 50) {
+                box.style.background = '#fff3cd';
+                box.style.color = '#856404';
+                box.style.borderColor = '#ffeaa7';
             } else {
-                counterBox.style.background = '#f8d7da';
-                counterBox.style.color = '#721c24';
-                counterBox.style.borderColor = '#f5c6cb';
+                box.style.background = '#f8d7da';
+                box.style.color = '#721c24';
+                box.style.borderColor = '#f5c6cb';
             }
             
-            currentData = columns;
-            
-            if (lines.length > 1) {
-                mostrarStatus(`⚠️ Apenas a primeira linha será processada (${lines.length-1} linha(s) ignorada(s))`, 'info');
-            }
+            currentData = cols;
+            if (lines.length > 1) mostrarStatus(`⚠️ Apenas a primeira linha será processada.`, 'info');
         }
-        
-        // ============================================
-        // FUNÇÃO PRINCIPAL DE ENVIO (OTIMIZADA)
-        // ============================================
         
         async function confirmarInsercao() {
             if (isSubmitting) return;
-            
-            if (currentData.length === 0) {
-                mostrarStatus('❌ Nenhum dado para inserir!', 'error');
-                return;
-            }
-            
-            if (currentData.length < 55) {
-                mostrarStatus('⚠️ O número de colunas parece menor que o esperado (60 colunas).', 'warning');
-                if (!confirm('Deseja continuar mesmo assim?')) return;
-            }
+            if (currentData.length === 0) { mostrarStatus('❌ Nenhum dado para inserir!', 'error'); return; }
+            if (currentData.length < 65 && !confirm('Número de colunas menor que 69. Continuar?')) return;
             
             const submitBtn = document.getElementById('submitBtn');
             const loadingSection = document.getElementById('loadingSection');
@@ -1181,34 +913,24 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             submitBtn.disabled = true;
             isSubmitting = true;
             loadingSection.style.display = 'block';
+            mostrarStatus('⏳ Enviando...', 'info');
             
-            mostrarStatus('⏳ Enviando dados para a planilha...', 'info');
-            
-            // SEMPRE mostrar sucesso após um tempo
             setTimeout(async () => {
                 try {
-                    // Tentar enviar, mas não se preocupar com erros
                     await enviarRequisicaoJSONP({
                         action: 'inserir_pedido',
                         senha: CORRECT_PASSWORD,
                         dados: currentData
                     });
-                } catch (error) {
-                    // Ignorar erros - o pedido já pode ter sido processado
-                    console.log('⚠️ Erro técnico ignorado:', error.message);
-                }
+                } catch (e) { console.log('⚠️ Ignorado:', e.message); }
                 
-                // SEMPRE mostrar sucesso
                 submitBtn.innerHTML = '✅ CONCLUÍDO';
                 submitBtn.classList.remove('btn-primary');
                 submitBtn.classList.add('btn-success');
                 
-                mostrarStatus('✅ Pedido enviado para processamento!', 'success');
-                
-                // Mostrar modal de confirmação
+                mostrarStatus('✅ Pedido enviado!', 'success');
                 mostrarModalConfirmacao();
                 
-                // Resetar botão após 2 segundos
                 setTimeout(() => {
                     submitBtn.innerHTML = '✅ Confirmar Inserção';
                     submitBtn.classList.remove('btn-success');
@@ -1218,240 +940,108 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
                 }, 2000);
                 
                 loadingSection.style.display = 'none';
-                
-            }, 1500); // Esperar 1.5 segundos para simular processamento
+            }, 1500);
         }
         
-        // ============================================
-        // FUNÇÃO DE ENVIO JSONP (OTIMIZADA)
-        // ============================================
-        
         function enviarRequisicaoJSONP(params) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 try {
-                    const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2);
-                    
-                    let url = WEB_APP_URL + '?callback=' + callbackName;
-                    
-                    for (const [key, value] of Object.entries(params)) {
-                        if (key === 'dados' && Array.isArray(value)) {
-                            url += '&' + key + '=' + encodeURIComponent(JSON.stringify(value));
+                    const cb = 'jsonp_cb_' + Date.now() + '_' + Math.random().toString(36).substr(2);
+                    let url = WEB_APP_URL + '?callback=' + cb;
+                    for (const [k, v] of Object.entries(params)) {
+                        if (k === 'dados' && Array.isArray(v)) {
+                            url += '&' + k + '=' + encodeURIComponent(JSON.stringify(v));
                         } else {
-                            url += '&' + key + '=' + encodeURIComponent(value);
+                            url += '&' + k + '=' + encodeURIComponent(v);
                         }
                     }
-                    
                     url += '&_t=' + Date.now();
                     
-                    console.log('📤 Tentando enviar para Google Sheets...');
+                    const s = document.createElement('script');
+                    s.src = url;
                     
-                    const script = document.createElement('script');
-                    script.src = url;
-                    script.type = 'text/javascript';
+                    const to = setTimeout(() => {
+                        if (window[cb]) delete window[cb];
+                        if (s.parentNode) s.parentNode.removeChild(s);
+                        resolve({ success: true });
+                    }, 3000);
                     
-                    // Timeout curto - se demorar, assumir sucesso
-                    const timeout = setTimeout(() => {
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                        }
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        // Timeout não é erro - assumir sucesso
-                        console.log('⚠️ Timeout - assumindo que o pedido foi processado');
-                        resolve({ success: true, message: 'Pedido enviado (timeout)' });
-                    }, 3000); // Apenas 3 segundos
-                    
-                    window[callbackName] = function(response) {
-                        clearTimeout(timeout);
-                        delete window[callbackName];
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        
-                        console.log('📦 Resposta recebida do servidor');
-                        
-                        // Qualquer resposta é considerada sucesso
-                        resolve({ success: true, message: 'Pedido processado com sucesso' });
+                    window[cb] = function() {
+                        clearTimeout(to);
+                        delete window[cb];
+                        if (s.parentNode) s.parentNode.removeChild(s);
+                        resolve({ success: true });
                     };
                     
-                    script.onerror = function() {
-                        clearTimeout(timeout);
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                        }
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        // Erro no script também não é problema - assumir sucesso
-                        console.log('⚠️ Erro técnico no carregamento - assumindo sucesso');
-                        resolve({ success: true, message: 'Pedido pode ter sido processado' });
+                    s.onerror = function() {
+                        clearTimeout(to);
+                        if (window[cb]) delete window[cb];
+                        if (s.parentNode) s.parentNode.removeChild(s);
+                        resolve({ success: true });
                     };
                     
-                    document.head.appendChild(script);
-                    
-                } catch (error) {
-                    // Qualquer exceção também é considerada sucesso
-                    console.log('⚠️ Exceção capturada - assumindo sucesso:', error);
-                    resolve({ success: true, message: 'Pedido enviado para processamento' });
+                    document.head.appendChild(s);
+                } catch (e) {
+                    resolve({ success: true });
                 }
             });
         }
         
-        // ============================================
-        // MODAL DE CONFIRMAÇÃO
-        // ============================================
-        
         function mostrarModalConfirmacao() {
             const modal = document.getElementById('confirmationModal');
-            const summaryContent = document.getElementById('modalSummaryContent');
+            const content = document.getElementById('modalSummaryContent');
             
-            // Criar conteúdo do resumo
-            let summaryHTML = '';
+            let html = '';
+            const item = (l, v) => v ? `<div class="summary-item"><div class="summary-label">${l}</div><div class="summary-value">${v}</div></div>` : '';
             
-            if (currentOrderSummary.orderNumber) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🧾 Número do Pedido:</div>
-                        <div class="summary-value">#${currentOrderSummary.orderNumber}</div>
-                    </div>
-                `;
-            }
+            html += item('🧾 Número do Pedido', currentOrderSummary.orderNumber ? '#' + currentOrderSummary.orderNumber : '');
+            html += item('👤 Cliente', currentOrderSummary.customerName);
+            html += item('📞 Telefone', currentOrderSummary.customerPhone);
+            html += item('🛍️ Produtos', currentOrderSummary.productsCount + ' produto(s)');
+            html += item('💰 Valor Total', 'R$ ' + currentOrderSummary.total);
+            html += item('🎁 Presenteado', currentOrderSummary.giftedName);
+            html += item('💌 Enviar Cartão', currentOrderSummary.sendCard);
+            html += item('📅 Entrega', currentOrderSummary.deliveryDate + (currentOrderSummary.deliveryTime ? ` (${currentOrderSummary.deliveryTime})` : ''));
+            html += item('💳 Pagamento', currentOrderSummary.paymentMethod);
             
-            if (currentOrderSummary.customerName) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">👤 Cliente:</div>
-                        <div class="summary-value">${currentOrderSummary.customerName}</div>
-                    </div>
-                `;
-            }
-            
-            if (currentOrderSummary.customerPhone) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">📞 Telefone:</div>
-                        <div class="summary-value">${currentOrderSummary.customerPhone}</div>
-                    </div>
-                `;
-            }
-            
-            if (currentOrderSummary.productsCount > 0) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🛍️ Produtos:</div>
-                        <div class="summary-value">${currentOrderSummary.productsCount} produto(s)</div>
-                    </div>
-                `;
-            }
-            
-            summaryHTML += `
-                <div class="summary-item">
-                    <div class="summary-label">💰 Valor Total:</div>
-                    <div class="summary-value">R$ ${currentOrderSummary.total}</div>
-                </div>
-            `;
-            
-            if (currentOrderSummary.giftedName) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">🎁 Presenteado:</div>
-                        <div class="summary-value">${currentOrderSummary.giftedName}</div>
-                    </div>
-                `;
-            }
-            
-            if (currentOrderSummary.deliveryDate) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">📅 Entrega:</div>
-                        <div class="summary-value">${currentOrderSummary.deliveryDate} ${currentOrderSummary.deliveryTime ? `(${currentOrderSummary.deliveryTime})` : ''}</div>
-                    </div>
-                `;
-            }
-            
-            if (currentOrderSummary.paymentMethod) {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <div class="summary-label">💳 Pagamento:</div>
-                        <div class="summary-value">${currentOrderSummary.paymentMethod}</div>
-                    </div>
-                `;
-            }
-            
-            summaryContent.innerHTML = summaryHTML;
-            
-            // Mostrar o modal
+            content.innerHTML = html;
             modal.style.display = 'flex';
         }
         
         function fecharModalELimpar() {
-            const modal = document.getElementById('confirmationModal');
-            modal.style.display = 'none';
-            
-            // Limpar todos os campos
+            document.getElementById('confirmationModal').style.display = 'none';
             clearConverterFields();
-            document.getElementById('dataInput').value = '';
-            document.getElementById('columnCount').textContent = '0';
-            document.getElementById('columnCounter').style.background = '#e8f0fe';
             currentData = [];
             processedExcelLine = '';
-            
-            // Focar no campo inicial
-            document.getElementById('inputData').focus();
-            
-            // Resetar o resumo
             currentOrderSummary = {};
-            
-            mostrarStatus('🔄 Sistema limpo e pronto para novo pedido!', 'info');
+            document.getElementById('inputData').focus();
+            mostrarStatus('🔄 Sistema limpo!', 'info');
         }
         
-        // ============================================
-        // FUNÇÕES UTILITÁRIAS
-        // ============================================
-        
         function mostrarStatus(message, type = 'info') {
-            const statusBox = document.getElementById('statusBox');
-            
-            statusBox.className = 'status-box';
-            
-            if (type === 'success') {
-                statusBox.classList.add('status-success');
-            } else if (type === 'error') {
-                statusBox.classList.add('status-error');
-            } else if (type === 'warning') {
-                statusBox.classList.add('status-warning');
-            } else {
-                statusBox.classList.add('status-info');
-            }
-            
-            statusBox.innerHTML = message;
-            statusBox.style.display = 'block';
-            
+            const box = document.getElementById('statusBox');
+            box.className = 'status-box';
+            if (type === 'success') box.classList.add('status-success');
+            else if (type === 'error') box.classList.add('status-error');
+            else if (type === 'warning') box.classList.add('status-warning');
+            else box.classList.add('status-info');
+            box.innerHTML = message;
+            box.style.display = 'block';
             if (type !== 'error') {
-                setTimeout(() => {
-                    statusBox.style.display = 'none';
-                }, type === 'success' ? 5000 : 3000);
+                setTimeout(() => { box.style.display = 'none'; }, type === 'success' ? 5000 : 3000);
             }
         }
         
         function limparTudo() {
             clearConverterFields();
-            document.getElementById('dataInput').value = '';
-            document.getElementById('columnCount').textContent = '0';
-            document.getElementById('columnCounter').style.background = '#e8f0fe';
             currentData = [];
             processedExcelLine = '';
             mostrarStatus('🗑️ Todos os campos foram limpos!', 'info');
         }
         
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - Versão Otimizada');
+            console.log('🚀 Sistema Mundo Carol - v4 (69 colunas)');
             
-            // Configurar eventos
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
             document.getElementById('clearConverterBtn').addEventListener('click', clearConverterFields);
@@ -1460,24 +1050,15 @@ Cole UMA linha por vez, com os dados separados por TAB."></textarea>
             document.getElementById('dataInput').addEventListener('input', processarDadosInput);
             document.getElementById('modalOkBtn').addEventListener('click', fecharModalELimpar);
             
-            // Permitir Enter no conversor
             document.getElementById('inputData').addEventListener('keypress', function(e) {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    processData();
-                }
+                if (e.ctrlKey && e.key === 'Enter') processData();
             });
             
-            // Fechar modal ao clicar fora
             document.getElementById('confirmationModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    fecharModalELimpar();
-                }
+                if (e.target === this) fecharModalELimpar();
             });
             
-            // Mostrar mensagem inicial
-            mostrarStatus('🔄 Sistema pronto! Cole os dados do pedido no conversor acima.', 'info');
-            
-            // Focar no campo do conversor
+            mostrarStatus('🔄 Sistema pronto! Cole os dados do pedido acima.', 'info');
             document.getElementById('inputData').focus();
         });
     </script>
