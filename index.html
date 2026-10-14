@@ -16,18 +16,78 @@
             --gray: #6c757d;
             --border: #dee2e6;
         }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f5f5f5; min-height: 100vh; padding: 20px; color: var(--dark); line-height: 1.5; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+        
         .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        .section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
-        .section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); }
+        
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+        
         .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
         .header h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; }
         .header p { color: var(--gray); font-size: 1rem; }
-        .converter-textarea { width: 100%; min-height: 250px; padding: 15px; border: 2px solid var(--border); border-radius: 8px; resize: vertical; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.4; margin-bottom: 15px; transition: border-color 0.3s; }
-        .converter-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(184, 173, 130, 0.1); }
+        
+        .converter-textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .converter-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(184, 173, 130, 0.1);
+        }
+        
         .button-group { display: flex; gap: 12px; margin-top: 15px; justify-content: center; flex-wrap: wrap; }
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 160px; }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 160px;
+        }
+        
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-primary:hover { background-color: var(--primary-dark); }
         .btn-secondary { background: white; color: var(--dark); border: 1px solid var(--border); }
@@ -37,41 +97,169 @@
         .btn-copy:hover { background-color: #0d261c; }
         .btn-success { background-color: var(--success); color: white; }
         .btn-success:hover { background-color: #218838; }
-        .preview-section { background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 15px; border: 1px solid var(--border); max-height: 400px; overflow-y: auto; }
-        .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 15px; font-size: 12px; }
-        .preview-row { display: flex; gap: 6px; padding: 4px 0; border-bottom: 1px dotted #ddd; }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid var(--border);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 15px;
+            font-size: 12px;
+        }
+        
+        .preview-row {
+            display: flex;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        
         .preview-key { font-weight: 600; color: var(--primary-dark); flex: 0 0 150px; }
-        .preview-val { color: #333; flex: 1; word-break: break-word; white-space: pre-wrap; }
+        .preview-val { color: #333; flex: 1; word-break: break-word; }
         .preview-val.empty { color: #aaa; font-style: italic; }
-        .tip-area { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding: 10px 15px; background: #e8f0fe; border-radius: 6px; border: 1px solid #d2e3fc; font-size: 12px; }
+        
+        .tip-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: #e8f0fe;
+            border-radius: 6px;
+            border: 1px solid #d2e3fc;
+            font-size: 12px;
+        }
+        
         .tip-text { color: #1a5fb4; flex: 1; }
-        .system-textarea { width: 100%; min-height: 120px; padding: 15px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.4; resize: vertical; transition: all 0.3s; background: white; }
-        .system-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(184, 173, 130, 0.1); }
-        .counter { background: #e8f0fe; padding: 10px; border-radius: 6px; margin: 12px 0; text-align: center; font-weight: bold; color: #1a5fb4; border: 1px solid #d2e3fc; font-size: 13px; }
-        .status-box { margin-top: 15px; padding: 12px 15px; border-radius: 6px; display: none; animation: fadeIn 0.3s; font-size: 13px; }
+        
+        .system-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            resize: vertical;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .system-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(184, 173, 130, 0.1);
+        }
+        
+        .counter {
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 12px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #1a5fb4;
+            border: 1px solid #d2e3fc;
+            font-size: 13px;
+        }
+        
+        .status-box {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            display: none;
+            animation: fadeIn 0.3s;
+            font-size: 13px;
+        }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .status-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .status-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         .status-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        
         .loading { display: none; text-align: center; margin: 15px 0; }
-        .spinner { border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top: 3px solid var(--primary); width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        
+        .spinner {
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .card { background: var(--light); border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 3px solid var(--primary); }
         .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        
         h2 { color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; font-size: 1.3rem; }
+        
         .info-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s; }
-        .modal-content { background: white; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.3s; }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s;
+        }
+        
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: white; border-radius: 12px 12px 0 0; text-align: center; }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        
         .modal-header h3 { font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .modal-body { padding: 20px; }
         .modal-footer { padding: 15px 20px; border-top: 1px solid var(--border); display: flex; justify-content: center; gap: 10px; }
+        
         .summary-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
         .summary-label { font-weight: 600; color: var(--primary); margin-bottom: 5px; font-size: 14px; }
-        .summary-value { color: var(--dark); font-size: 14px; white-space: pre-wrap; }
-        .confirmation-message { text-align: center; font-size: 16px; margin-bottom: 25px; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; }
+        .summary-value { color: var(--dark); font-size: 14px; }
+        
+        .confirmation-message {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+        
         @media (max-width: 768px) {
             .container { padding: 10px; gap: 15px; }
             .section { padding: 15px; }
@@ -94,12 +282,13 @@
             </div>
             
             <div class="info-box">
-                <strong>✅ SISTEMA OTIMIZADO v7:</strong><br />
-                1. <strong>Nº do pedido:</strong> Captura #9943 corretamente<br />
-                2. <strong>Forma de pagamento:</strong> Lê linha por linha após "Pagamento via"<br />
-                3. <strong>Mensagem + Assinatura:</strong> SEMPRE juntas (quebras escapadas)<br />
-                4. <strong>Frete e Total:</strong> Aceitam quebras de linha do site<br />
-                5. <strong>Nome do cliente:</strong> Captura após "ID da transação"
+                <strong>✅ SISTEMA OTIMIZADO:</strong><br />
+                1. <strong>Processamento automático:</strong> Sistema otimizado para extração de dados<br />
+                2. <strong>Endereços corrigidos:</strong> Captura ambos os formatos de endereço<br />
+                3. <strong>Duplicatas removidas:</strong> Produtos repetidos são contados apenas uma vez<br />
+                4. <strong>Enviar cartão:</strong> Capturado e salvo na coluna R<br />
+                5. <strong>CEP do endereço:</strong> Capturado e salvo na coluna AJ<br />
+                6. <strong>Mensagem + Assinatura:</strong> Salvos juntos na mesma célula
             </div>
             
             <textarea class="converter-textarea" id="inputData" placeholder="Cole aqui todo o conteúdo do pedido do site..."></textarea>
@@ -187,10 +376,6 @@
         const CORRECT_PASSWORD = '562938';
         const TOTAL_COLUMNS = 69;
         
-        // ✅ Marcador para substituir quebras de linha
-        const QB_MARK = '⟪QB⟫';
-        const TAB_MARK = '⟪TAB⟫';
-        
         let currentData = [];
         let processedExcelLine = '';
         let isSubmitting = false;
@@ -199,26 +384,6 @@
         // ============================================
         // FUNÇÕES AUXILIARES
         // ============================================
-        
-        // ✅ Normaliza o texto (remove \r, caracteres invisíveis)
-        function normalizeText(input) {
-            if (!input) return '';
-            return input.replace(/\r/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
-        }
-        
-        // ✅ Escapa quebras de linha e tabs para não quebrar a planilha
-        function esc(v) {
-            if (v === null || v === undefined) return '';
-            return String(v)
-                .replace(/\r?\n/g, QB_MARK)
-                .replace(/\t/g, TAB_MARK);
-        }
-        
-        // ✅ Desescapa (para exibição na pré-visualização)
-        function unesc(v) {
-            if (!v) return '';
-            return String(v).replace(new RegExp(QB_MARK, 'g'), '\n').replace(new RegExp(TAB_MARK, 'g'), '\t');
-        }
         
         function getWeekdayName(dateStr) {
             const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -250,125 +415,118 @@
         }
         
         // ============================================
-        // EXTRAÇÃO DE DADOS - v7
+        // EXTRAÇÃO DE DADOS
         // ============================================
         
+        // ✅ CORRIGIDO: Nº do pedido com fallback
         function extractOrderNumber(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            let m = normalized.match(/^#(\d+)/m);
+            // Tenta #9943 primeiro (formato do site)
+            let m = input.match(/#(\d+)/);
             if (m) return m[1];
-            m = normalized.match(/#(\d+)/);
-            if (m) return m[1];
-            return '';
+            // Fallback: procura "Pedido" ou "Nº"
+            m = input.match(/(?:Pedido|Nº|N°)\s*:?\s*(\d+)/i);
+            return m ? m[1] : '';
         }
         
         function extractCoupon(input) {
             if (!input) return { code: '', amount: 0 };
-            const normalized = normalizeText(input);
-            const cupomMatch = normalized.match(/Desconto via cupom\s+([A-Z0-9]+)/i);
+            
+            const cupomMatch = input.match(/Desconto via cupom\s+([A-Z0-9]+)/i);
             if (!cupomMatch) return { code: '', amount: 0 };
+            
             const code = cupomMatch[1].trim();
             let amount = 0;
-            const dm = normalized.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
+            const dm = input.match(/Desconto via cupom[^:]*:\s*R\$\s*-?(\d+[.,]\d{2})/);
             if (dm) amount = Math.abs(parsePrice(dm[1]));
+            
             return { code, amount };
         }
         
         function extractTotal(input) {
             if (!input) return 0;
-            const normalized = normalizeText(input);
-            let m = normalized.match(/Total:\s*\n\s*R\$\s*(\d+[.,]\d{2})/);
-            if (m) return parsePrice(m[1]);
-            m = normalized.match(/Total:\s*R\$\s*(\d+[.,]\d{2})/);
+            const m = input.match(/Total:\s*R\$\s*(\d+[.,]\d{2})/);
             return m ? parsePrice(m[1]) : 0;
         }
         
         function extractShipping(input) {
             if (!input) return 0;
-            const normalized = normalizeText(input);
-            let m = normalized.match(/Envio via[\s\S]{0,200}?:\s*R\$\s*(\d+[.,]\d{2})/);
+            let m = input.match(/Envio via[\s\S]{0,120}?:\s*R\$\s*(\d+[.,]\d{2})/);
             if (m) return parsePrice(m[1]);
-            m = normalized.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
-            if (m) return parsePrice(m[1]);
-            return 0;
+            m = input.match(/Envio via[^:]*:\s*R\$\s*(\d+[.,]\d{2})/);
+            return m ? parsePrice(m[1]) : 0;
         }
         
         function extractCustomerName(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            
-            // Estratégia 1: nome entre "ID da transação: XXX" e "Detalhes do cliente"
-            let m = normalized.match(/ID da transa[çc][ãa]o:[^\n]*\n\s*([^\n]+?)\s*\n\s*Detalhes do cliente/i);
-            if (m) {
-                const nome = m[1].trim();
-                if (nome && !nome.match(/^[\d\s\-\.]+$/) && nome.length > 2) return nome;
-            }
-            
-            // Estratégia 2: última linha antes de "Detalhes do cliente"
-            const before = normalized.split('Detalhes do cliente')[0];
+            const before = input.split('Detalhes do cliente')[0];
             if (!before) return '';
             const lines = before.split('\n').map(l => l.trim()).filter(l => l !== '');
-            
-            const ignorePatterns = [
-                /#\d+/, /Criado em/, /Situação do pedido/, /^Pago$/, /^Entregue$/,
-                /^Envio via/, /^Digite o código/, /^Enviar$/, /^Prazo de entrega/,
-                /^Mensagem do cliente/, /^Observação do carrinho/, /^\[/,
-                /^CEP da entrega/, /^Data da entrega/, /^Horário da entrega/,
-                /^Nome do presenteado/, /^Telefone do presenteado/, /^Enviar cartão/,
-                /^Mensagem do cartão/, /^Assinatura no cartão/, /^\[\//,
-                /^Pagamento via/, /^Pix$/, /^PIX$/, /^Pagar\.me/, /^Boleto/,
-                /^Cart[ãa]o/, /^ID da transa/, /^\d{2}\/\d{2}\/\d{4}/,
-                /^Belo Horizonte/, /^BH/, /^Minas Gerais/, /^MG$/
-            ];
-            
             for (let i = lines.length - 1; i >= 0; i--) {
                 const l = lines[i];
-                let skip = false;
-                for (const p of ignorePatterns) {
-                    if (p.test(l)) { skip = true; break; }
+                if (!l.match(/#\d+/) && 
+                    !l.match(/Criado em/) &&
+                    !l.match(/Situação do pedido/) &&
+                    !l.match(/^Pago$/) &&
+                    !l.match(/^Envio via/) &&
+                    !l.match(/^Digite o código/) &&
+                    !l.match(/^Enviar$/) &&
+                    !l.match(/^Prazo de entrega/) &&
+                    !l.match(/^Mensagem do cliente/) &&
+                    !l.match(/^Observação do carrinho/) &&
+                    !l.match(/^\[/) &&
+                    !l.match(/^CEP da entrega/) &&
+                    !l.match(/^Data da entrega/) &&
+                    !l.match(/^Horário da entrega/) &&
+                    !l.match(/^Nome do presenteado/) &&
+                    !l.match(/^Telefone do presenteado/) &&
+                    !l.match(/^Enviar cartão/) &&
+                    !l.match(/^Mensagem do cartão/) &&
+                    !l.match(/^Assinatura no cartão/) &&
+                    !l.match(/^\[\//) &&
+                    !l.match(/^Pagamento via/) &&
+                    !l.match(/^Pix$/) &&
+                    !l.match(/^PIX$/) &&
+                    !l.match(/^Pagar\.me/) &&
+                    !l.match(/^Boleto/) &&
+                    !l.match(/^Cart[ãa]o/) &&
+                    !l.match(/^ID da transa/)) {
+                    return l;
                 }
-                if (skip) continue;
-                return l;
             }
             return '';
         }
         
         function extractPhone(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            const m = normalized.match(/Telefone celular:\s*\n?\s*([\d\s\-\(\)]+)/);
+            const m = input.match(/Telefone celular:\s*\n?\s*([\d\s\-\(\)]+)/);
             return m ? m[1].trim() : '';
         }
         
         function extractGiftedName(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            const m = normalized.match(/Nome do presenteado:\s*(.+?)(?:\n|$)/i);
+            const m = input.match(/Nome do presenteado:\s*(.+?)(?:\n|$)/i);
             return m ? m[1].trim() : '';
         }
         
         function extractGiftedPhone(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            const m = normalized.match(/Telefone do presenteado:\s*(.+?)(?:\n|$)/i);
+            const m = input.match(/Telefone do presenteado:\s*(.+?)(?:\n|$)/i);
             return m ? m[1].trim() : '';
         }
         
         function extractSendCard(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            const m = normalized.match(/Enviar cart[ãa]o:\s*(Sim|N[ãa]o)/i);
+            const m = input.match(/Enviar cart[ãa]o:\s*(Sim|N[ãa]o)/i);
             return m ? m[1].trim() : '';
         }
         
         function extractAddress(input) {
             const result = { street: '', complement: '', neighborhood: '', city: '', reference: '', cep: '' };
             if (!input) return result;
-            const normalized = normalizeText(input);
             
-            let addrMatch = normalized.match(/Endereço de entrega e pagamento([\s\S]+?)(?=Produtos|$)/);
-            if (!addrMatch) addrMatch = normalized.match(/Endereço de entrega([\s\S]+?)(?=Endereço de cobrança|Produtos|$)/);
+            let addrMatch = input.match(/Endereço de entrega e pagamento([\s\S]+?)(?=Produtos|$)/);
+            if (!addrMatch) addrMatch = input.match(/Endereço de entrega([\s\S]+?)(?=Endereço de cobrança|Produtos|$)/);
             if (!addrMatch) return result;
             
             const addrText = addrMatch[1];
@@ -392,11 +550,11 @@
             const cepM = addrText.match(/CEP:\s*(\d{5}-?\d{3})/i);
             if (cepM) result.cep = cepM[1].trim();
             
-            const refM = normalized.match(/Referência:\s*(.+?)(?:\n|$)/);
+            const refM = input.match(/Referência:\s*(.+?)(?:\n|$)/);
             if (refM && refM[1].trim() !== '') {
                 result.reference = refM[1].trim();
             } else {
-                const cepEnt = normalized.match(/CEP da entrega:\s*(\d{5}-?\d{3})/i);
+                const cepEnt = input.match(/CEP da entrega:\s*(\d{5}-?\d{3})/i);
                 if (cepEnt) result.reference = cepEnt[1].trim();
                 else if (result.cep) result.reference = result.cep;
             }
@@ -407,32 +565,30 @@
         function extractDeliveryInfo(input) {
             const result = { date: '', formattedDate: '', time: '' };
             if (!input) return result;
-            const normalized = normalizeText(input);
             
-            const dm = normalized.match(/Data da entrega:\s*(\d{2}\/\d{2}\/\d{4})/i);
+            const dm = input.match(/Data da entrega:\s*(\d{2}\/\d{2}\/\d{4})/i);
             if (dm) {
                 result.date = dm[1];
                 result.formattedDate = `${dm[1]} - ${getWeekdayName(dm[1])}`;
             }
             
-            const tm = normalized.match(/Hor[áa]rio da entrega:\s*(.+?)(?:\n|$)/i);
+            const tm = input.match(/Hor[áa]rio da entrega:\s*(.+?)(?:\n|$)/i);
             result.time = tm ? tm[1].trim() : '';
             
             return result;
         }
         
-        // ✅ Mensagem + Assinatura SEMPRE juntas
+        // ✅ CORRIGIDO: Mensagem + Assinatura juntas
         function extractMessage(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
             
             let messageText = '';
             let signatureText = '';
             
-            const msgM = normalized.match(/Mensagem do cart[ãa]o:\s*([\s\S]*?)(?=\n\s*Assinatura no cart[ãa]o:|$)/i);
+            const msgM = input.match(/Mensagem do cart[ãa]o:\s*([\s\S]*?)(?=\n\s*Assinatura no cart[ãa]o:|$)/i);
             if (msgM) messageText = msgM[1].trim();
             
-            const sigM = normalized.match(/Assinatura no cart[ãa]o:\s*([\s\S]*?)(?=\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|$)/i);
+            const sigM = input.match(/Assinatura no cart[ãa]o:\s*([\s\S]*?)(?=\n\s*\[\/AGENDAMENTO|\n\s*Pagamento via|\n\s*ID da transa|$)/i);
             if (sigM) signatureText = sigM[1].trim();
             
             if (messageText && signatureText) {
@@ -445,9 +601,8 @@
         
         function extractProducts(input) {
             if (!input) return { productName: '', productsList: [] };
-            const normalized = normalizeText(input);
             
-            const sec = normalized.match(/Produtos[\s\S]+?(?=Envio via|Total:|$)/);
+            const sec = input.match(/Produtos[\s\S]+?(?=Envio via|Total:|$)/);
             if (!sec) return { productName: '', productsList: [] };
             
             const lines = sec[0].split('\n');
@@ -504,43 +659,24 @@
             return { productName, productsList: list };
         }
         
-        // ✅ Forma de pagamento: lê linha por linha
+        // ✅ CORRIGIDO: Forma de pagamento robusta
         function detectPaymentMethod(input) {
             if (!input) return '';
-            const normalized = normalizeText(input);
-            const lines = normalized.split('\n').map(l => l.trim());
-            
-            for (let i = 0; i < lines.length; i++) {
-                if (/^Pagamento via$/i.test(lines[i])) {
-                    for (let j = i + 1; j < lines.length; j++) {
-                        const linha = lines[j].trim();
-                        if (linha === '') continue;
-                        
-                        if (/^pix$/i.test(linha)) {
-                            return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
-                        }
-                        if (/pagar\.me|pagar me|cart[ãa]o|link/i.test(linha)) {
-                            return 'Link de Cartão Crédito online (vamos te enviar o link)';
-                        }
-                        if (/boleto/i.test(linha)) {
-                            return 'Boleto bancário';
-                        }
-                        break;
-                    }
-                    break;
-                }
+            // Normaliza
+            const normalized = input.replace(/\r/g, '');
+            // Captura a linha APÓS "Pagamento via" (aceita quebra de linha)
+            const m = normalized.match(/Pagamento via[\s\n]+([^\n]+)/i);
+            if (m) {
+                const method = m[1].trim();
+                if (/pix/i.test(method)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+                if (/cart[ãa]o|pagar\.me/i.test(method)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
+                if (/boleto/i.test(method)) return 'Boleto bancário';
+                return method;
             }
-            
-            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(normalized)) {
-                return 'Link de Cartão Crédito online (vamos te enviar o link)';
-            }
-            if (/\bPix\b|\bPIX\b/i.test(normalized)) {
-                return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
-            }
-            if (/Boleto/i.test(normalized)) {
-                return 'Boleto bancário';
-            }
-            
+            // Fallback
+            if (/Pagar\.me|Link de Cart|Cart[ãa]o de Cr[eé]dito/i.test(normalized)) return 'Link de Cartão Crédito online (vamos te enviar o link)';
+            if (/\bPix\b|\bPIX\b/i.test(normalized)) return 'PIX direto para nosso CNPJ? (Vamos te enviar o link)';
+            if (/Boleto/i.test(normalized)) return 'Boleto bancário';
             return '';
         }
         
@@ -604,6 +740,7 @@
                     shippingPrice: formatPrice(shipping),
                     couponCode: coupon.code,
                     couponAmount: formatPrice(coupon.amount),
+                    couponInfo: coupon.code ? `CUPOM: ${coupon.code} - Desconto de R$ ${formatPrice(coupon.amount)}` : '',
                     street: address.street,
                     complement: address.complement,
                     neighborhood: address.neighborhood,
@@ -613,42 +750,51 @@
                     deliveryDate: delivery.formattedDate,
                     deliveryTime: delivery.time,
                     message,
+                    hasMessage: message.trim() !== '' ? 'Sim' : 'Não',
                     paymentMethod,
-                    source: 'SITE'
+                    source: 'SITE',
+                    isAnonymous: ''
                 };
                 
-                // ✅ 69 COLUNAS COM QUEBRAS ESCAPADAS
+                // ✅ 69 COLUNAS
                 const c = new Array(TOTAL_COLUMNS).fill('');
                 
-                c[0]  = esc(result.dateTime);            // A
-                c[1]  = esc(result.customerName);        // B
-                c[2]  = esc(result.customerPhone);       // C
-                c[3]  = esc(result.productName);         // D
-                c[4]  = esc(result.productPrice);        // E
-                c[5]  = esc(result.shippingPrice);       // F
-                c[6]  = esc(result.source);              // G
-                c[7]  = '';                              // H
-                c[8]  = esc(result.giftedName);          // I
-                c[9]  = esc(result.giftedPhone);         // J
-                c[10] = esc(result.street);              // K
-                c[11] = esc(result.complement);          // L
-                c[12] = esc(result.neighborhood);        // M
-                c[13] = esc(result.city);                // N
-                c[14] = esc(result.reference);           // O
-                c[15] = esc(result.deliveryDate);        // P
-                c[16] = esc(result.deliveryTime);        // Q
-                c[17] = esc(result.sendCard);            // R
-                c[18] = esc(result.message);             // S - Mensagem + Assinatura (COM ⟪QB⟫)
-                c[32] = esc(result.paymentMethod);       // AG
-                c[35] = esc(result.cep);                 // AJ
-                c[45] = esc(result.couponCode);          // AT
-                c[46] = esc(result.source);              // AU
-                c[48] = '';                              // AW - vazio
-                c[52] = esc(result.orderNumber);         // BA - Nº do pedido
+                c[0]  = result.dateTime;            // A - Carimbo
+                c[1]  = result.customerName;        // B - Nome Comprador
+                c[2]  = result.customerPhone;       // C - Telefone Comprador
+                c[3]  = result.productName;         // D - Código/Descrição
+                c[4]  = result.productPrice;        // E - Preço produto
+                c[5]  = result.shippingPrice;       // F - Frete
+                c[6]  = result.source;              // G - Coluna 1
+                c[7]  = '';                         // H - Entregador
+                c[8]  = result.giftedName;          // I - Nome Presenteado
+                c[9]  = result.giftedPhone;         // J - Telefone Presenteado
+                c[10] = result.street;              // K - Rua
+                c[11] = result.complement;          // L - Complemento
+                c[12] = result.neighborhood;        // M - Bairro
+                c[13] = result.city;                // N - Cidade
+                c[14] = result.reference;           // O - Ponto de Referência
+                c[15] = result.deliveryDate;        // P - Data da entrega
+                c[16] = result.deliveryTime;        // Q - Horário
+                c[17] = result.sendCard;            // R - Enviar cartão (Sim/Não)
+                c[18] = result.message;             // S - Mensagem + Assinatura
+                // T–AF (19–31) vazias
+                c[32] = result.paymentMethod;       // AG - Forma pagamento
+                // AH–AI (33–34) vazias
+                c[35] = result.cep;                 // AJ - CEP DO ENDEREÇO
+                // AK–AS (36–44) vazias
+                c[45] = result.couponCode;          // AT - Cupom desconto
+                c[46] = result.source;              // AU - Nos ajude a melhorar
+                // AV (47) vazia
+                c[48] = result.isAnonymous;         // AW - Presente anônimo (vazio)
+                // AX (49) vazia
+                c[50] = result.couponInfo;          // AY - CUPOM DESCONTO OU BRINDE
+                // AZ (51) vazia
+                c[52] = result.orderNumber;         // BA - NÚMERO DO PEDIDO
+                // BB–BQ (53–68) vazias
                 
                 processedExcelLine = c.join('\t');
                 
-                // ✅ Pré-visualização: desescapa para mostrar formatado
                 showPreview(result, total, shipping, coupon.amount, productValue);
                 document.getElementById('dataInput').value = processedExcelLine;
                 processarDadosInput();
@@ -667,10 +813,8 @@
             document.getElementById('noPreview').style.display = 'none';
             
             const row = (label, value) => {
-                // ✅ Desescapa para exibição
-                const displayValue = unesc(value);
-                const v = displayValue && String(displayValue).trim() !== '' ? displayValue : '—';
-                const cls = displayValue && String(displayValue).trim() !== '' ? '' : 'empty';
+                const v = value && String(value).trim() !== '' ? value : '—';
+                const cls = value && String(value).trim() !== '' ? '' : 'empty';
                 return `<div class="preview-row"><div class="preview-key">${label}</div><div class="preview-val ${cls}">${v}</div></div>`;
             };
             
@@ -788,8 +932,9 @@
             
             setTimeout(async () => {
                 try {
+                    // ✅ USA 'action' (como no BKP que funcionava)
                     await enviarRequisicaoJSONP({
-                        tipo: 'inserir_pedido',  // ✅ Usa 'tipo' em vez de 'action'
+                        action: 'inserir_pedido',
                         senha: CORRECT_PASSWORD,
                         dados: currentData
                     });
@@ -911,7 +1056,7 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema Mundo Carol - v7 (69 colunas com escape)');
+            console.log('🚀 Sistema Mundo Carol - v8 (baseado no BKP + correções)');
             
             document.getElementById('processBtn').addEventListener('click', processData);
             document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
